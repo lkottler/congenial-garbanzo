@@ -4,14 +4,14 @@ import java.io.File;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 
@@ -32,15 +32,17 @@ public class Main extends Application {
 		primaryStage.setWidth(bounds.getWidth());
 		primaryStage.setHeight(bounds.getHeight());
 		
-		final Label label = new Label("chicken noodle");
-		label.setAlignment(Pos.CENTER_RIGHT);
-		label.setFont(new Font("Arial", 30));
+		Label label1 = new Label("Name:");
+		TextField textField = new TextField ();
+		VBox hb = new VBox();
+		hb.getChildren().addAll(label1, textField);
+		hb.setSpacing(10);
 		
 		
 		final VBox vbox = new VBox();
 		vbox.setSpacing(5);
 		vbox.setPadding(new Insets(10, 0, 0, 10));
-		vbox.getChildren().addAll(label);
+		vbox.getChildren().addAll(hb);
 		
 		((Group) scene1.getRoot()).getChildren().addAll(vbox);
 		
