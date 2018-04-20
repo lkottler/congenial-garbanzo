@@ -4,24 +4,30 @@ public class Team {
 	
 	private int seed;
 	private String teamName;
+	private int totalScore;
 	
 	Team(){
 		seed = 0;
+		totalScore = 0;
 		teamName = "default";
 	}
 	Team(int seed, String teamName){
+		totalScore = 0;
 		this.seed = seed;
 		this.teamName = teamName;
 	}
 	
 	//Getters
 	public int getSeed(){return seed;}
+	public int getTotalScore(){return totalScore;}
 	public String getTeamName(){return teamName;}
 	
 	//Setters
 	public void setSeed(int seed){this.seed = seed;}
 	public void setTeamName(String teamName){this.teamName = teamName;}
 	
-	public int compareTo(Team team){return seed - team.getSeed();}
+	//Methods
+	public int compareTo(Team team){return totalScore - team.getTotalScore();}
+	public void addScore(int score){totalScore += score;}
 	
 }
