@@ -29,8 +29,8 @@ public class Game {
 	}
 	
 	//Setters
-	public void setScore(int score1, int score2){score[0] = score1; score[1] = score2;}
 	public void setScore(int[] scores){score = scores;}
+	public void setScore(int score1, int score2){this.setScore(new int[]{score1, score2});}
 	
 	//Getters
 	public int[] getScores(){return score;}
