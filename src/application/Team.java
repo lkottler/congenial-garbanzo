@@ -22,4 +22,6 @@ public class Team {
 	public void setSeed(int seed){this.seed = seed;}
 	public void setTeamName(String teamName){this.teamName = teamName;}
 	
+	public int compareTo(Team team){return seed - team.getSeed();}
+	
 }
