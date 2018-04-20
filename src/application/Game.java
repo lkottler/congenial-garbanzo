@@ -14,7 +14,9 @@ public class Game {
 		boolean isCompleted = true;
 		score = new int[]{0, 0};
 	}
-	
+	Game(Team team1, Team team2){
+		this(team1, team2, 0, 0);
+	}
 	Game(Team team1, Team team2, int[] score){
 		this.team1 = team1;
 		this.team2 = team2;

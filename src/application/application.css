@@ -3,6 +3,7 @@
      -fx-background-image: url("background.jpg");
 }
 
+
 .button {
     -fx-text-fill: white;
     -fx-font-family: "Arial Narrow";
