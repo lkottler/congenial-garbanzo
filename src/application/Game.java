@@ -41,7 +41,6 @@ public class Game {
 	
 	//Methods
 	public void completeGame(){
-		
 		winner = (score[0] == score[1])
 				? (team1.compareTo(team2) >= 0) ? team1 : team2
 				: (score[0] > score[1]) ? team1 : team2;

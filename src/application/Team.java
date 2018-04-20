@@ -4,15 +4,13 @@ public class Team {
 	
 	private int seed;
 	private String teamName;
-	private int totalScore;
+	private int totalScore = 0;
 	
 	Team(){
 		seed = 0;
-		totalScore = 0;
 		teamName = "default";
 	}
 	Team(int seed, String teamName){
-		totalScore = 0;
 		this.seed = seed;
 		this.teamName = teamName;
 	}
