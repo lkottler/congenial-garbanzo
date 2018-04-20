@@ -26,7 +26,11 @@ public class Bracket {
 		else System.out.println("Failed to create games. Invalid number of teams: " +numOfTeams);
 	}
 	
+	//Setters
+	public void setTeams(ArrayList<Team> teams){this.teams = teams;}
+	
 	//Getters
+	public ArrayList<Team> getTeams() {return teams;}
 	public int getSize() {return teams.size();}
 	
 	
