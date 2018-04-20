@@ -29,11 +29,8 @@ public class Game {
 	}
 	
 	//Setters
-	public void setWinner(Team team){winner = team;}
-	public void setWinner(boolean team1Won){winner = (team1Won) ? team1 : team2;}
 	public void setScore(int score1, int score2){score[0] = score1; score[1] = score2;}
 	public void setScore(int[] scores){score = scores;}
-	public void setCompleted(boolean isCompleted){this.isCompleted = isCompleted;}
 	
 	//Getters
 	public int[] getScores(){return score;}
@@ -44,9 +41,11 @@ public class Game {
 	
 	//Methods
 	public void completeGame(){
-		if (score[0] == score[1]){ // tie
-			winner = (team1.compareTo(team2) > 0) ? team1 : team2;
-		} else winner = (score[0] > score[1]) ? team1 : team2;
+		
+		winner = (score[0] == score[1])
+				? (team1.compareTo(team2) >= 0) ? team1 : team2;
+				: (score[0] > score[1]) ? team1 : team2;
+		
 		isCompleted = true;
 		team1.addScore(score[0]);
 		team2.addScore(score[1]);
