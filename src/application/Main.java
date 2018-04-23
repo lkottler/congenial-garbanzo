@@ -6,16 +6,16 @@ import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 
@@ -42,6 +42,10 @@ public class Main extends Application {
 		
 		Scene mainMenu = new Scene(grid, 800, 600);	
 		mainMenu.getStylesheets().clear();
+		ImageView court = new ImageView();
+//	
+//		Image img_court = new Image();
+//		grid.getChildren().add(new ImageView(img_court));
 		File f = new File("src/application/application.css");		
 		mainMenu.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));
 		
@@ -91,8 +95,8 @@ public class Main extends Application {
 		int ySpace = btnHeight*2;
 		
 		for (int i = 0; i < 31 - Integer.numberOfLeadingZeros(numTeams); i++){
-			int subTeamNum = (i == 0) ? numTeams : numTeams / (2*i);
-			xDif = i*(btnWidth + 10);
+			int subTeamNum = numTeams / (1<<i);
+			xDif = i*(btnWidth + 10); 
 			yDif = btnHeight*(1 << i) - btnHeight;
 			for (int j = 0; j < subTeamNum; j++){
 				Button btn = new Button();
