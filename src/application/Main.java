@@ -1,6 +1,7 @@
 package application;
 	
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -42,8 +43,7 @@ public class Main extends Application {
 		
 		Scene mainMenu = new Scene(grid, 800, 600);	
 		mainMenu.getStylesheets().clear();
-		ImageView court = new ImageView();	
-		Image img_court = new Image("res/cheese.jpeg");
+		Image img_court = new Image(new FileInputStream("res/cheese.jpeg"));
 		grid.getChildren().add(new ImageView(img_court));
 		File f = new File("src/application/application.css");		
 		mainMenu.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));
