@@ -1,6 +1,5 @@
 package application;
 	
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -45,9 +44,8 @@ public class Main extends Application {
 		Scene mainMenu = new Scene(grid, 800, 600);	
 		mainMenu.getStylesheets().clear();
 		
-		
 		try {
-		FileInputStream input = new FileInputStream("res/wi.png");
+		FileInputStream input = new FileInputStream("res/img/wi.png");
 		Image imgCheese = new Image(input);
 		ImageView imv = new ImageView(imgCheese);
 		imv.setFitHeight(400);
@@ -56,8 +54,7 @@ public class Main extends Application {
 		grid.add(pictureBox, 0, 1);
 		} catch (FileNotFoundException e1) {e1.printStackTrace();}
 		
-		File f = new File("src/application/application.css");		
-		mainMenu.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));
+		mainMenu.getStylesheets().add("application/application.css");
 		
 		Text welcomeText = new Text("Welcome to Tournament Builder!");
 		welcomeText.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 30));
@@ -90,14 +87,9 @@ public class Main extends Application {
 		
 		Pane root = new Pane();
 		Scene scene1 = new Scene(root, 800, 600);	
-		scene1.getStylesheets().clear();
-		File f = new File("src/application/application.css");		
-		scene1.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));
+		scene1.getStylesheets().add("application/application.css");
 
 		ArrayList<Team> teams = b.getTeams();
-		int spacing = 50;
-		int smallSpace = 10;
-		
 		
 		int numTeams = b.getSize();
 		int x, y, xDif, yDif;
