@@ -1,7 +1,10 @@
 package application;
 
 import java.util.ArrayList;
-
+/*
+ * Utilizes the game and team classes to create a bracket
+ * interface
+ */
 public class Bracket {
 
 	private ArrayList<Team> teams;
