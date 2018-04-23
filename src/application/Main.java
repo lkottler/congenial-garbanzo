@@ -2,6 +2,7 @@ package application;
 	
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
@@ -43,8 +44,18 @@ public class Main extends Application {
 		
 		Scene mainMenu = new Scene(grid, 800, 600);	
 		mainMenu.getStylesheets().clear();
-		Image img_court = new Image(new FileInputStream("res/cheese.jpeg"));
-		grid.getChildren().add(new ImageView(img_court));
+		
+		
+		try {
+		FileInputStream input = new FileInputStream("res/wi.png");
+		Image imgCheese = new Image(input);
+		ImageView imv = new ImageView(imgCheese);
+		imv.setFitHeight(400);
+		imv.setFitWidth(400);
+		HBox pictureBox = new HBox(imv);
+		grid.add(pictureBox, 0, 1);
+		} catch (FileNotFoundException e1) {e1.printStackTrace();}
+		
 		File f = new File("src/application/application.css");		
 		mainMenu.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));
 		
