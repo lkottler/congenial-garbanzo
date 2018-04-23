@@ -42,10 +42,9 @@ public class Main extends Application {
 		
 		Scene mainMenu = new Scene(grid, 800, 600);	
 		mainMenu.getStylesheets().clear();
-		ImageView court = new ImageView();
-//	
-//		Image img_court = new Image();
-//		grid.getChildren().add(new ImageView(img_court));
+		ImageView court = new ImageView();	
+		Image img_court = new Image("res/cheese.jpeg");
+		grid.getChildren().add(new ImageView(img_court));
 		File f = new File("src/application/application.css");		
 		mainMenu.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));
 		
