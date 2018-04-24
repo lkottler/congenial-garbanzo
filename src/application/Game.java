@@ -30,8 +30,8 @@ public class Game {
 	}
 	
 	//Setters
-	public void setScore(int[] scores){score = scores;}
-	public void setScore(int score1, int score2){this.setScore(new int[]{score1, score2});}
+	public void setTeam1Score(int score) {this.score[0] = score;}
+	public void setTeam2Score(int score) {this.score[1] = score;}
 	
 	//Getters
 	public int[] getScores()     {return score;}

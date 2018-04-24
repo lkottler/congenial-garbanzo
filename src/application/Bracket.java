@@ -34,7 +34,9 @@ public class Bracket {
 	
 	//Getters
 	public ArrayList<Team> getTeams() {return teams;}
+	public ArrayList<Game> getGames() {return games;}
 	public int getSize() {return teams.size();}
+	
 	
 	
 }

@@ -89,6 +89,41 @@ public class Main extends Application {
 		Scene scene1 = new Scene(root, 800, 600);	
 		scene1.getStylesheets().add("application/application.css");
 
+		ArrayList<Game> games = b.getGames();
+		
+		int numGames = b.getSize()/2,
+		x, y, xDif, yDif,
+		btnWidth = 90, btnHeight = 60,
+		ySpace = btnHeight*2;
+		
+		for (int i = 0; i < 31 - Integer.numberOfLeadingZeros(numGames); i++){
+			int subNumGames = numGames / (1 << i);
+			xDif = i*(btnWidth + 10);
+			yDif = btnHeight*(1 << i) - btnHeight;
+			
+			for (int j = 0; j < subNumGames; j++){
+				Button btn = new Button();
+				btn.setText("Team 1: x\nTeam 2: y"); //Team names go here
+				btn.setPrefSize(btnWidth, btnHeight);
+				
+				int yMul = (i == 0) ? 1 : 1 << i;
+				x = (j < subNumGames/2) ? 0 + xDif : 505 - xDif;
+				y = (j < subNumGames/2) 
+						? j*ySpace*yMul + yDif
+						: (j - subNumGames/2)*ySpace*yMul + yDif;
+				x += 25; //padding
+				y += 25; //padding
+				btn.setLayoutX(x);
+				btn.setLayoutY(y);
+				//TODO btn.setOnAction(e -> setScoreOfTeam());
+				root.getChildren().add(btn);
+				
+			}
+			
+		}
+		
+		
+		/*
 		ArrayList<Team> teams = b.getTeams();
 		
 		int numTeams = b.getSize();
@@ -118,6 +153,7 @@ public class Main extends Application {
 				
 			}
 		}
+		*/
 		/*
 		for (int i = 0; i < b.getSize(); i++){
 			Button butt = new Button(teams.get(i).getTeamName());
@@ -146,7 +182,8 @@ public class Main extends Application {
 	
 	public static void main(String[] args) {
 		String[] teamNames = new String[]{"Bobby's Team", "Green Angles", "Duskwings", "Albertino",
-				"Lightforged", "Highmountain", "Nightfallen", "Pesky Plumbers"};
+				"Lightforged", "Highmountain", "Nightfallen", "Pesky Plumbers",
+				"x","x","x","x","x","x","x","x"};
 		
 		ArrayList<Team> teamList = new ArrayList<Team>();
 		for (int i = 0; i < teamNames.length; i++){
