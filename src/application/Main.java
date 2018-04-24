@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	static Bracket b;
-	
+		
 	@Override
 	public void start(Stage primaryStage) {
 		
@@ -83,6 +83,21 @@ public class Main extends Application {
 		
 	}
 	
+	//Default styling (feel free to mess with these)
+
+	enum styling {
+		MAX_X (540),
+		MAX_Y (540),
+		X_PADDING (25),
+		Y_PADDING (25),
+		BTN_WIDTH (100),
+		BTN_HEIGHT (40),
+		FONT_SIZE (12);
+		private int value;
+		styling(int value) {this.value = value;}
+		public int scale(double scalar) {return (int) (value * scalar);}
+	}
+	
 	public void viewBracket(Stage primaryStage) {
 		
 		Pane root = new Pane();
@@ -91,35 +106,60 @@ public class Main extends Application {
 
 		ArrayList<Game> games = b.getGames();
 		
-		int numGames = b.getSize()/2,
+		//Defaults (based around a 16 team bracket)
+		int numGames = games.size(),
 		x, y, xDif, yDif,
-		btnWidth = 90, btnHeight = 60,
-		ySpace = btnHeight*2;
+		gameCount = 0,
+		iterations  = 31 - Integer.numberOfLeadingZeros(numGames);
 		
-		for (int i = 0; i < 31 - Integer.numberOfLeadingZeros(numGames); i++){
+		final double scalar = 3.0/iterations;
+		
+		System.out.println(iterations + " " + scalar);
+		
+		final int maxX = styling.MAX_X.scale(1),
+				  maxY = styling.MAX_Y.scale(1),
+				  xPad = styling.X_PADDING.scale(scalar),
+				  yPad = styling.Y_PADDING.scale(scalar),
+				  btnWidth = styling.BTN_WIDTH.scale(scalar),
+				  btnHeight = styling.BTN_HEIGHT.scale(scalar),
+				  fontSize = styling.FONT_SIZE.scale(scalar),
+				  ySpace = btnHeight*2;
+		
+		for (int i = 0; i < iterations; i++){
 			int subNumGames = numGames / (1 << i);
-			xDif = i*(btnWidth + 10);
+			xDif = i*(btnWidth + 2);
 			yDif = btnHeight*(1 << i) - btnHeight;
 			
 			for (int j = 0; j < subNumGames; j++){
 				Button btn = new Button();
-				btn.setText("Team 1: x\nTeam 2: y"); //Team names go here
 				btn.setPrefSize(btnWidth, btnHeight);
-				
+				btn.setStyle("-fx-font-size: " + fontSize + "px");
+				if (gameCount >= numGames){ //NO FUNCTION BUTTON
+					btn.setText("");
+				} else{
+					Game workingGame = b.getGames().get(gameCount);
+					Team team1 = workingGame.getTeam1();
+					Team team2 = workingGame.getTeam2();
+					int[] scores = workingGame.getScores();
+					btn.setText((gameCount >= games.size()) ? "" :
+						team1.getTeamName() + ": " + scores[0] + "\n"+
+						team2.getTeamName() + ": " + scores[1]);
+					//TODO btn.setOnAction(e -> do someshit);
+				}
+				//TODO fix X spacing
 				int yMul = (i == 0) ? 1 : 1 << i;
-				x = (j < subNumGames/2) ? 0 + xDif : 505 - xDif;
+				x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif;
 				y = (j < subNumGames/2) 
 						? j*ySpace*yMul + yDif
 						: (j - subNumGames/2)*ySpace*yMul + yDif;
-				x += 25; //padding
-				y += 25; //padding
+				x += xPad; //padding
+				y += yPad; //padding
 				btn.setLayoutX(x);
 				btn.setLayoutY(y);
 				//TODO btn.setOnAction(e -> setScoreOfTeam());
 				root.getChildren().add(btn);
-				
+				gameCount++;
 			}
-			
 		}
 		
 		
@@ -181,15 +221,20 @@ public class Main extends Application {
 	
 	
 	public static void main(String[] args) {
-		String[] teamNames = new String[]{"Bobby's Team", "Green Angles", "Duskwings", "Albertino",
-				"Lightforged", "Highmountain", "Nightfallen", "Pesky Plumbers",
-				"x","x","x","x","x","x","x","x"};
+		String[] teamNames = new String[64];
+		for (int i = 0; i < 64; i++){
+			teamNames[i] = "Team" + i;
+		}
+		
 		
 		ArrayList<Team> teamList = new ArrayList<Team>();
 		for (int i = 0; i < teamNames.length; i++){
 			teamList.add(new Team(i+1, teamNames[i]));
 		}
 		b = new Bracket(teamList);
+		
+		b.assignGames();
+		
 		launch(args);
 	}
 }
