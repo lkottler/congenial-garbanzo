@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -23,6 +25,10 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	static Bracket b;
+	
+	final static int
+	frameHeight = 800,
+	frameWidth = 1000;
 		
 	@Override
 	public void start(Stage primaryStage) {
@@ -39,9 +45,9 @@ public class Main extends Application {
 		grid.setAlignment(Pos.TOP_CENTER);
 		grid.setHgap(10);
 		grid.setVgap(10);
-		grid.setPadding(new Insets(25, 25, 25, 25));
+		grid.setPadding(new Insets(5, 5, 5, 5));
 		
-		Scene mainMenu = new Scene(grid, 800, 600);	
+		Scene mainMenu = new Scene(grid, frameWidth, frameHeight);	
 		mainMenu.getStylesheets().clear();
 		
 		try {
@@ -83,25 +89,26 @@ public class Main extends Application {
 		
 	}
 	
-	//Default styling (feel free to mess with these)
+	//Default st (feel free to mess with these)
 
-	enum styling {
-		MAX_X (540),
-		MAX_Y (540),
-		X_PADDING (25),
-		Y_PADDING (25),
+	enum st {
+		MAX_X (frameWidth - 180),
+		MAX_Y (frameHeight - 140),
+		X_PADDING (20),
+		Y_PADDING (20),
 		BTN_WIDTH (100),
 		BTN_HEIGHT (40),
 		FONT_SIZE (12);
 		private int value;
-		styling(int value) {this.value = value;}
+		st(int value) {this.value = value;}
 		public int scale(double scalar) {return (int) (value * scalar);}
+		public int val() { return value;}
 	}
 	
 	public void viewBracket(Stage primaryStage) {
 		
 		Pane root = new Pane();
-		Scene scene1 = new Scene(root, 800, 600);	
+		Scene scene1 = new Scene(root, frameWidth, frameHeight);	
 		scene1.getStylesheets().add("application/application.css");
 
 		ArrayList<Game> games = b.getGames();
@@ -112,23 +119,32 @@ public class Main extends Application {
 		gameCount = 0,
 		iterations  = 31 - Integer.numberOfLeadingZeros(numGames);
 		
-		final double scalar = 3.0/iterations;
+		double
+		xAvailSpace = (st.MAX_X.val() - st.X_PADDING.val()) / (iterations*2.0 + 1) / st.BTN_WIDTH.val(),
+		yAvailSpace = (st.MAX_Y.val() - st.Y_PADDING.val()) / (numGames/2.0) / st.BTN_HEIGHT.val();
+		
+		final double scalar = (xAvailSpace < yAvailSpace) // see which is restricting
+					? xAvailSpace
+					: yAvailSpace;
 		
 		System.out.println(iterations + " " + scalar);
 		
-		final int maxX = styling.MAX_X.scale(1),
-				  maxY = styling.MAX_Y.scale(1),
-				  xPad = styling.X_PADDING.scale(scalar),
-				  yPad = styling.Y_PADDING.scale(scalar),
-				  btnWidth = styling.BTN_WIDTH.scale(scalar),
-				  btnHeight = styling.BTN_HEIGHT.scale(scalar),
-				  fontSize = styling.FONT_SIZE.scale(scalar),
-				  ySpace = btnHeight*2;
+		final int maxX = st.MAX_X.val(),
+				  maxY = st.MAX_Y.val(),
+				  xPad = st.X_PADDING.scale(scalar),
+				  yPad = st.Y_PADDING.scale(scalar),
+				  btnWidth = st.BTN_WIDTH.scale(scalar),
+				  btnHeight = st.BTN_HEIGHT.scale(scalar),
+				  fontSize = st.FONT_SIZE.scale(scalar),
+				  ySpace = (int) (maxY/(numGames/2.0)),
+				  xSpace = (int) (maxX/(2.0*iterations)) - btnWidth;
+		
+		
 		
 		for (int i = 0; i < iterations; i++){
 			int subNumGames = numGames / (1 << i);
-			xDif = i*(btnWidth + 2);
-			yDif = btnHeight*(1 << i) - btnHeight;
+			xDif = i*(btnWidth + 2) + i*xSpace;
+			yDif = ySpace*(1 << i)/2;
 			
 			for (int j = 0; j < subNumGames; j++){
 				Button btn = new Button();
@@ -147,71 +163,31 @@ public class Main extends Application {
 					//TODO btn.setOnAction(e -> do someshit);
 				}
 				//TODO fix X spacing
-				int yMul = (i == 0) ? 1 : 1 << i;
-				x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif;
-				y = (j < subNumGames/2) 
-						? j*ySpace*yMul + yDif
-						: (j - subNumGames/2)*ySpace*yMul + yDif;
+				int yMul = 1 << i;
+				x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif - btnWidth;
+				
+				y = (j < subNumGames/2)
+						? j*ySpace*(1 << i) + yDif
+ 						: (j - subNumGames/2)*ySpace*(1 << i) + yDif;
+				
 				x += xPad; //padding
 				y += yPad; //padding
 				btn.setLayoutX(x);
 				btn.setLayoutY(y);
-				//TODO btn.setOnAction(e -> setScoreOfTeam());
 				root.getChildren().add(btn);
 				gameCount++;
 			}
 		}
+		//put CHAMPIONSHIP in HERE TODO
+		Button championBtn = new Button();
+		championBtn.setText("ARE YOU READY");
 		
 		
-		/*
-		ArrayList<Team> teams = b.getTeams();
 		
-		int numTeams = b.getSize();
-		int x, y, xDif, yDif;
-		int btnWidth = 90, btnHeight = 30;
-		int ySpace = btnHeight*2;
-		
-		for (int i = 0; i < 31 - Integer.numberOfLeadingZeros(numTeams); i++){
-			int subTeamNum = numTeams / (1<<i);
-			xDif = i*(btnWidth + 10); 
-			yDif = btnHeight*(1 << i) - btnHeight;
-			for (int j = 0; j < subTeamNum; j++){
-				Button btn = new Button();
-				btn.setText(teams.get(j).getTeamName()); //TODO correctly name teams
-				btn.setMinSize(btnWidth, btnHeight);
-				int yMul = (i == 0) ? 1 : 1 << i;
-				x = (j < subTeamNum/2) ? 0 + xDif : 505 - xDif;
-				y = (j < subTeamNum/2) 
-						? j*ySpace*yMul + yDif
-						: (j - subTeamNum/2)*ySpace*yMul + yDif;
-				x += 25; //padding
-				y += 25; //padding
-				btn.setLayoutX(x);
-				btn.setLayoutY(y);
-				//TODO btn.setOnAction(e -> setScoreOfTeam());
-				root.getChildren().add(btn);
-				
-			}
-		}
-		*/
-		/*
-		for (int i = 0; i < b.getSize(); i++){
-			Button butt = new Button(teams.get(i).getTeamName());
-			butt.setMinSize(90, 30);
-			int x = (i >= b.getSize()/2) ? 5 : 505;
-			x += 25; //padding
-			butt.setLayoutX(x);
-			int y = spacing*i - (i%2)*smallSpace;
-			y = (i >= b.getSize()/2) ? y - spacing*b.getSize()/2 : y; //TODO
-			y += 25; //padding
-			butt.setLayoutY(y);
-			root.getChildren().add(butt);
-		}
-		*/
 		Button optionsBtn = new Button("Additional Options");
-		optionsBtn.setOnAction(e -> menuScreen(primaryStage));
+		optionsBtn.setOnAction(KevinIsHotWhatDoYouGuysThink -> menuScreen(primaryStage));
 		optionsBtn.setMinSize(120, 40);
-		optionsBtn.setLayoutX(655);
+		optionsBtn.setLayoutX(frameWidth-140);
 		optionsBtn.setLayoutY(25);
 		root.getChildren().add(optionsBtn);
 		
@@ -221,16 +197,19 @@ public class Main extends Application {
 	
 	
 	public static void main(String[] args) {
-		String[] teamNames = new String[64];
-		for (int i = 0; i < 64; i++){
+		
+		int tempTeams = 512;
+		
+		String[] teamNames = new String[tempTeams];
+		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team" + i;
 		}
-		
 		
 		ArrayList<Team> teamList = new ArrayList<Team>();
 		for (int i = 0; i < teamNames.length; i++){
 			teamList.add(new Team(i+1, teamNames[i]));
 		}
+		
 		b = new Bracket(teamList);
 		
 		b.assignGames();
