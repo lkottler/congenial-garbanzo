@@ -5,17 +5,18 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -87,8 +88,7 @@ public class Main extends Application {
 		
 	}
 	
-	//Default st (feel free to mess with these)
-
+	//Default styling (feel free to mess with these)
 	enum st {
 		MAX_X (frameWidth - 180),
 		MAX_Y (frameHeight - 140),
@@ -104,7 +104,6 @@ public class Main extends Application {
 	}
 	
 	public void viewBracket(Stage primaryStage) {
-		
 		Pane root = new Pane();
 		Scene scene1 = new Scene(root, frameWidth, frameHeight);	
 		scene1.getStylesheets().add("application/application.css");
@@ -112,13 +111,14 @@ public class Main extends Application {
 		ArrayList<Game> games = b.getGames();
 		
 		//Defaults (based around a 16 team bracket)
+		int[] toRemove = new int[2];
 		int numGames = games.size(),
 		x, y, xDif, yDif,
 		gameCount = 0,
 		iterations  = 31 - Integer.numberOfLeadingZeros(numGames);
 		
 		double
-		xAvailSpace = (st.MAX_X.val() - st.X_PADDING.val()) / (iterations*2.0 + 1) / st.BTN_WIDTH.val(),
+		xAvailSpace = 0.9 * (st.MAX_X.val() - st.X_PADDING.val()) / (iterations*2.0) / st.BTN_WIDTH.val(),
 		yAvailSpace = (st.MAX_Y.val() - st.Y_PADDING.val()) / (numGames/2.0) / st.BTN_HEIGHT.val();
 		
 		final double scalar = (xAvailSpace < yAvailSpace) // see which is restricting
@@ -127,19 +127,19 @@ public class Main extends Application {
 		
 		System.out.println(iterations + " " + scalar);
 		
-		final int maxX = st.MAX_X.val(),
-				  maxY = st.MAX_Y.val(),
-				  xPad = st.X_PADDING.scale(scalar),
-				  yPad = st.Y_PADDING.scale(scalar),
+		final int maxX     = st.MAX_X.val(),
+				  maxY     = st.MAX_Y.val(),
+				  xPad     = st.X_PADDING.scale(scalar),
+				  yPad     = st.Y_PADDING.scale(scalar),
 				  btnWidth = st.BTN_WIDTH.scale(scalar),
-				  btnHeight = st.BTN_HEIGHT.scale(scalar),
+				  btnHeight= st.BTN_HEIGHT.scale(scalar),
 				  fontSize = st.FONT_SIZE.scale(scalar),
 				  ySpace = (int) (maxY/(numGames/2.0)),
 				  xSpace = (int) (maxX/(2.0*iterations)) - btnWidth;
 		
 		for (int i = 0; i < iterations; i++){
 			int subNumGames = numGames / (1 << i);
-			xDif = i*(btnWidth + 2) + i*xSpace;
+			xDif = i*(btnWidth) + i*xSpace;
 			yDif = ySpace*(1 << i)/2;
 			
 			for (int j = 0; j < subNumGames; j++){
@@ -150,21 +150,44 @@ public class Main extends Application {
 					btn.setText("");
 				} else{
 					Game workingGame = b.getGames().get(gameCount);
-					Team team1 = workingGame.getTeam1();
-					Team team2 = workingGame.getTeam2();
+					Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
+					String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
 					int[] scores = workingGame.getScores();
 					btn.setText((gameCount >= games.size()) ? "" :
-						team1.getTeamName() + ": " + scores[0] + "\n"+
-						team2.getTeamName() + ": " + scores[1]);
-					//TODO btn.setOnAction(e -> do someshit);
+						t1Name + ": " + scores[0] + "\n"+
+						t2Name + ": " + scores[1]);
+					btn.setOnAction(e -> {
+						Label[] teamLabels = new Label[]{
+								new Label(t1Name + "'s Score:"),
+								new Label(t2Name + "'s Score:")};;
+						TextField[] textFields = new TextField[]{
+								new TextField(), //team1 textfield
+								new TextField()};//team2 textfield
+						HBox[] scoreBoxes = new HBox[]{
+								new HBox(), new HBox()};
+						if (toRemove[0] != 0) {
+							root.getChildren().remove(toRemove[1]);
+							root.getChildren().remove(toRemove[0]);
+						}
+						for (int p = 0; p < 2; p++){
+							textFields[p].setPrefSize(30,10);
+							scoreBoxes[p].setSpacing(5);
+							scoreBoxes[p].setLayoutX(maxX - (teams[p].getTeamName().length()*5) + 85);
+							scoreBoxes[p].setLayoutY(75 + p*30);
+							scoreBoxes[p].getChildren().addAll(teamLabels[p],textFields[p]);
+							  toRemove[p] = root.getChildren().size();
+							root.getChildren().add(scoreBoxes[p]);
+						}
+						
+						Button setScores = new Button();
+
+					});
 				}
 				//TODO fix X spacing
-				int yMul = 1 << i;
 				x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif - btnWidth;
 				y = (j < subNumGames/2)
 						? j*ySpace*(1 << i) + yDif
  						: (j - subNumGames/2)*ySpace*(1 << i) + yDif;
-				
 				x += xPad; //padding
 				y += yPad; //padding
 				btn.setLayoutX(x);
@@ -182,6 +205,8 @@ public class Main extends Application {
 		championBtn.setLayoutY(maxY / 2 - btnHeight*1.8);
 		root.getChildren().add(championBtn);
 		
+		
+		// SIDE BAR RIGHT SIDE
 		Button optionsBtn = new Button("Additional Options");
 		optionsBtn.setOnAction(KevinIsHotWhatDoYouGuysThink -> menuScreen(primaryStage));
 		optionsBtn.setMinSize(120, 40);
@@ -189,17 +214,19 @@ public class Main extends Application {
 		optionsBtn.setLayoutY(25);
 		root.getChildren().add(optionsBtn);
 		
+		
+		
+
+		//root.getChildren().remove(root.getChildren().size() - 1);
 		primaryStage.setScene(scene1);
 		primaryStage.show(); 
 	}
 	
 	public static void main(String[] args) {
-		
-		int tempTeams = 32;
-		
+		int tempTeams = 512;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
-			teamNames[i] = "Team" + i;
+			teamNames[i] = "Team " + (i+1);
 		}
 		
 		ArrayList<Team> teamList = new ArrayList<Team>();
@@ -208,9 +235,7 @@ public class Main extends Application {
 		}
 		
 		b = new Bracket(teamList);
-		
 		b.assignGames();
-		
 		launch(args);
 	}
 }
