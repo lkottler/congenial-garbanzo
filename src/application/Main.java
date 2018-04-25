@@ -32,9 +32,7 @@ public class Main extends Application {
 		
 	@Override
 	public void start(Stage primaryStage) {
-		
 		menuScreen(primaryStage);
-
 	}
 	
 	private void menuScreen(Stage primaryStage){
@@ -139,8 +137,6 @@ public class Main extends Application {
 				  ySpace = (int) (maxY/(numGames/2.0)),
 				  xSpace = (int) (maxX/(2.0*iterations)) - btnWidth;
 		
-		
-		
 		for (int i = 0; i < iterations; i++){
 			int subNumGames = numGames / (1 << i);
 			xDif = i*(btnWidth + 2) + i*xSpace;
@@ -165,7 +161,6 @@ public class Main extends Application {
 				//TODO fix X spacing
 				int yMul = 1 << i;
 				x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif - btnWidth;
-				
 				y = (j < subNumGames/2)
 						? j*ySpace*(1 << i) + yDif
  						: (j - subNumGames/2)*ySpace*(1 << i) + yDif;
@@ -181,8 +176,11 @@ public class Main extends Application {
 		//put CHAMPIONSHIP in HERE TODO
 		Button championBtn = new Button();
 		championBtn.setText("ARE YOU READY");
-		
-		
+		championBtn.setStyle("-fx-font-size: " + fontSize*1.5 + "px");
+		championBtn.setPrefSize(btnWidth*1.5, btnHeight*1.5);
+		championBtn.setLayoutX((maxX-btnWidth) / 2);
+		championBtn.setLayoutY(maxY / 2 - btnHeight*1.8);
+		root.getChildren().add(championBtn);
 		
 		Button optionsBtn = new Button("Additional Options");
 		optionsBtn.setOnAction(KevinIsHotWhatDoYouGuysThink -> menuScreen(primaryStage));
@@ -195,10 +193,9 @@ public class Main extends Application {
 		primaryStage.show(); 
 	}
 	
-	
 	public static void main(String[] args) {
 		
-		int tempTeams = 512;
+		int tempTeams = 32;
 		
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
