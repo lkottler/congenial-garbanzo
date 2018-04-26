@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -103,10 +104,7 @@ public class Main extends Application {
 		public int val() { return value;}
 	}
 	
-	private HBox[] buildBtn(Button btn, Game workingGame, Pane root, int paneWidth, HBox[] remove){
-		
-		HBox[] scoreBoxes;
-		
+	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth){
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
 		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
 		int[] scores = workingGame.getScores();
@@ -118,12 +116,13 @@ public class Main extends Application {
 			TextField[] textFields = new TextField[]{
 					new TextField(), //team1 textfield
 					new TextField()};//team2 textfield
-			scoreBoxes = new HBox[]{
-					new HBox(), new HBox()};
-			root.getChildren().remove(remove[0]);
-			root.getChildren().remove(remove[1]);
+			HBox[] scoreBoxes = new HBox[]{
+					new HBox(), new HBox()
+			};
 			for (int p = 0; p < 2; p++){
+				root.getChildren().remove(root.lookup("#toRemove-" + p));
 				textFields[p].setPrefSize(30,10);
+				scoreBoxes[p].setId("toRemove-" + p);
 				scoreBoxes[p].setSpacing(5);
 				scoreBoxes[p].setLayoutX(paneWidth - (teams[p].getTeamName().length()*5) + 85);
 				scoreBoxes[p].setLayoutY(75 + p*30);
@@ -131,10 +130,10 @@ public class Main extends Application {
 				root.getChildren().add(scoreBoxes[p]);
 			}			
 			Button setScores = new Button();
+			
+			Button completeGame = new Button();
+			
 		});
-
-		return scoreBoxes;
-		
 	}
 	
 	public void viewBracket(Stage primaryStage) {
@@ -145,6 +144,7 @@ public class Main extends Application {
 		ArrayList<Game> games = b.getGames();
 		
 		//Defaults (based around a 16 team bracket)
+		HBox[] remove = null;
 		int toRemove = -1;
 		int numGames = games.size(),
 		x, y, xDif, yDif,
@@ -198,8 +198,6 @@ public class Main extends Application {
 				btn.setLayoutX(x);
 				btn.setLayoutY(y);
 				root.getChildren().add(btn);
-				System.out.println(root.getChildren().size());
-
 				gameCount++;
 			}
 		}
@@ -211,7 +209,6 @@ public class Main extends Application {
 		championBtn.setLayoutX((maxX-btnWidth) / 2);
 		championBtn.setLayoutY(maxY / 2 - btnHeight*1.8);
 		root.getChildren().add(championBtn);
-		
 		
 		// SIDE BAR RIGHT SIDE
 		Button optionsBtn = new Button("Additional Options");
