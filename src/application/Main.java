@@ -103,6 +103,40 @@ public class Main extends Application {
 		public int val() { return value;}
 	}
 	
+	private HBox[] buildBtn(Button btn, Game workingGame, Pane root, int paneWidth, HBox[] remove){
+		
+		HBox[] scoreBoxes;
+		
+		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
+		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
+		int[] scores = workingGame.getScores();
+		btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
+		btn.setOnAction(e -> {
+			Label[] teamLabels = new Label[]{
+					new Label(t1Name + "'s Score:"),
+					new Label(t2Name + "'s Score:")};;
+			TextField[] textFields = new TextField[]{
+					new TextField(), //team1 textfield
+					new TextField()};//team2 textfield
+			scoreBoxes = new HBox[]{
+					new HBox(), new HBox()};
+			root.getChildren().remove(remove[0]);
+			root.getChildren().remove(remove[1]);
+			for (int p = 0; p < 2; p++){
+				textFields[p].setPrefSize(30,10);
+				scoreBoxes[p].setSpacing(5);
+				scoreBoxes[p].setLayoutX(paneWidth - (teams[p].getTeamName().length()*5) + 85);
+				scoreBoxes[p].setLayoutY(75 + p*30);
+				scoreBoxes[p].getChildren().addAll(teamLabels[p],textFields[p]);
+				root.getChildren().add(scoreBoxes[p]);
+			}			
+			Button setScores = new Button();
+		});
+
+		return scoreBoxes;
+		
+	}
+	
 	public void viewBracket(Stage primaryStage) {
 		Pane root = new Pane();
 		Scene scene1 = new Scene(root, frameWidth, frameHeight);	
@@ -111,7 +145,7 @@ public class Main extends Application {
 		ArrayList<Game> games = b.getGames();
 		
 		//Defaults (based around a 16 team bracket)
-		int[] toRemove = new int[2];
+		int toRemove = -1;
 		int numGames = games.size(),
 		x, y, xDif, yDif,
 		gameCount = 0,
@@ -149,39 +183,10 @@ public class Main extends Application {
 				if (gameCount >= numGames){ //NO FUNCTION BUTTON
 					btn.setText("");
 				} else{
-					Game workingGame = b.getGames().get(gameCount);
-					Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
-					String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
-					int[] scores = workingGame.getScores();
-					btn.setText((gameCount >= games.size()) ? "" :
-						t1Name + ": " + scores[0] + "\n"+
-						t2Name + ": " + scores[1]);
-					btn.setOnAction(e -> {
-						Label[] teamLabels = new Label[]{
-								new Label(t1Name + "'s Score:"),
-								new Label(t2Name + "'s Score:")};;
-						TextField[] textFields = new TextField[]{
-								new TextField(), //team1 textfield
-								new TextField()};//team2 textfield
-						HBox[] scoreBoxes = new HBox[]{
-								new HBox(), new HBox()};
-						if (toRemove[0] != 0) {
-							root.getChildren().remove(toRemove[1]);
-							root.getChildren().remove(toRemove[0]);
-						}
-						for (int p = 0; p < 2; p++){
-							textFields[p].setPrefSize(30,10);
-							scoreBoxes[p].setSpacing(5);
-							scoreBoxes[p].setLayoutX(maxX - (teams[p].getTeamName().length()*5) + 85);
-							scoreBoxes[p].setLayoutY(75 + p*30);
-							scoreBoxes[p].getChildren().addAll(teamLabels[p],textFields[p]);
-							  toRemove[p] = root.getChildren().size();
-							root.getChildren().add(scoreBoxes[p]);
-						}
-						
-						Button setScores = new Button();
-
-					});
+					if (gameCount < numGames){
+						Game workingGame = b.getGames().get(gameCount);
+						buildBtn(btn, workingGame, root, maxX);
+					}
 				}
 				//TODO fix X spacing
 				x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif - btnWidth;
@@ -193,6 +198,8 @@ public class Main extends Application {
 				btn.setLayoutX(x);
 				btn.setLayoutY(y);
 				root.getChildren().add(btn);
+				System.out.println(root.getChildren().size());
+
 				gameCount++;
 			}
 		}
@@ -223,7 +230,7 @@ public class Main extends Application {
 	}
 	
 	public static void main(String[] args) {
-		int tempTeams = 512;
+		int tempTeams = 64;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
