@@ -419,10 +419,10 @@ public class Main extends Application {
 		for (File f : musicFiles){
 			music.add(new Media(f.toURI().toString()));
 		}
-		loopMusic(3);
+		loopMusic(2);
 		musicPlayer.setVolume(.25); //init sound to 25%
 		
-		int tempTeams = 32;
+		int tempTeams = 16;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
