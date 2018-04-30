@@ -201,8 +201,6 @@ public class Main extends Application {
 					ArrayList<Game> tempGames = b.getGames();
 					for (int i = 0; i < size; i++){
 						Button currBtn = (Button) root.lookup("#btn-" + (offset + i));
-						System.out.println(currBtn == null);
-						System.out.println("Couldn't find: #btn-" + (offset + i));
 						if (tempGames.size() == 1) {
 							//Build championship button
 						} else buildBtn(currBtn, tempGames.get(i), root, paneWidth);
@@ -240,9 +238,7 @@ public class Main extends Application {
 		final double scalar = (xAvailSpace < yAvailSpace) // see which is restricting
 					? xAvailSpace
 					: yAvailSpace;
-		
-		System.out.println(iterations + " " + scalar);
-		
+				
 		final int maxX     = st.MAX_X.val(),
 				  maxY     = st.MAX_Y.val(),
 				  xPad     = st.X_PADDING.scale(scalar),
@@ -262,7 +258,6 @@ public class Main extends Application {
 				Button btn = new Button();
 				btn.setPrefSize(btnWidth, btnHeight);
 				btn.setStyle("-fx-font-size: " + fontSize + "px");
-				System.out.println("Created button: btn-" + gameCount);
 				btn.setId("btn-" + gameCount);
 				if (gameCount >= numGames){ //NO FUNCTION BUTTON
 					btn.setText("");

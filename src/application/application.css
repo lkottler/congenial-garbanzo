@@ -8,6 +8,7 @@
 
 .button {
 	-fx-text-fill: black;
+	-fx-font-weight: bold;
 	-fx-font-family: "Robosto";
 	-fx-background-color: linear-gradient(white, yellow);
 }
