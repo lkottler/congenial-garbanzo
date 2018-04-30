@@ -1,27 +1,35 @@
 package application;
 	
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 
 public class Main extends Application {
@@ -31,62 +39,66 @@ public class Main extends Application {
 	final static int
 	frameHeight = 800,
 	frameWidth = 1000;
-		
+	
+	static MediaPlayer musicPlayer;
+	static ArrayList<Media> music = new ArrayList<Media>();
+	static String currentSong;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		menuScreen(primaryStage);
 	}
 	
+	private Image loadImage(String path){
+		Image img = null;
+		try {
+			img = new Image(new File("res/img/" + path).toURI().toURL().toString());
+		} catch (MalformedURLException e) {
+			System.out.println("Failed to load image: res/img/" + path);
+			e.printStackTrace();
+		}
+		return img;
+	}
+	
 	private void menuScreen(Stage primaryStage){
 		
-		primaryStage.setTitle("Tournament Bracket Program: Milestone2"); //TODO
+		primaryStage.setTitle("Welcome to my Ȟ̸̳͚̝̖̂ͪ̈́́ȩ͙͚͇͎͓̣ͤá̞̖̬͔̟̈́̆͋̌̀͜͟v̸̙͎̇ͬͪͬͤē̛̖͙̻̩̩̻͌̚͠n͍̬͈̝̙̱̱̰̔ͩͣͣ̂ͧ̓̃"); //TODO
+		Pane menuPane = new Pane();
+		buildDefaults(menuPane);
+		Scene menuScene = new Scene(menuPane, frameWidth, frameHeight);
+		menuScene.getStylesheets().add("application/application.css");
 		
-		GridPane grid = new GridPane();
-		grid.setAlignment(Pos.TOP_CENTER);
-		grid.setHgap(10);
-		grid.setVgap(10);
-		grid.setPadding(new Insets(5, 5, 5, 5));
+		int[] cData = new int[]{frameWidth / 2, frameHeight /2, 300};
+		Circle whiteP = new Circle();
+		whiteP.setCenterX(cData[0]);
+		whiteP.setCenterY(cData[1]);
+		whiteP.setFill(javafx.scene.paint.Color.WHITE);
+		whiteP.setRadius(cData[2]);
 		
-		Scene mainMenu = new Scene(grid, frameWidth, frameHeight);	
-		mainMenu.getStylesheets().clear();
+		// pay no attention to this code.
+		Image secret = loadImage("menu.png");
+		ImageView imv = new ImageView(secret);
+		imv.setOpacity(0.008);
+		imv.setScaleX((cData[2] * 2) / (secret.getWidth()));
+		imv.setScaleY((cData[2] * 2) / (secret.getHeight()));
+		final HBox secretRegion = new HBox(imv);
+		secretRegion.setPrefSize(cData[2]*2, cData[2]*2);
+		secretRegion.setLayoutX(cData[0] - cData[2]+ 57);
+		secretRegion.setLayoutY(cData[1] - cData[2]+ 57);
 		
-		try {
-		FileInputStream input = new FileInputStream("res/img/wi.png");
-		Image imgCheese = new Image(input);
-		ImageView imv = new ImageView(imgCheese);
-		imv.setFitHeight(400);
-		imv.setFitWidth(400);
-		HBox pictureBox = new HBox(imv);
-		grid.add(pictureBox, 0, 1);
-		} catch (FileNotFoundException e1) {e1.printStackTrace();}
-		
-		mainMenu.getStylesheets().add("application/application.css");
-		
-		Text welcomeText = new Text("Welcome to Tournament Builder!");
-		welcomeText.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 30));
-		grid.add(welcomeText, 0, 0, 2, 1);
+		menuPane.getChildren().addAll(whiteP, secretRegion);
 		
 		Button bracketBtn = new Button("View Bracket");
-		bracketBtn.setOnAction(e -> viewBracket(primaryStage));
-		bracketBtn.setPrefSize(120, 40);
-		HBox hbBracketBtn = new HBox(10);
+		bracketBtn.setOnAction(e -> {
+			File duckFile = new File("res/snd/duck.mp3");
+			Media duckSound = new Media(duckFile.toURI().toString());
+			MediaPlayer duckPlayer = new MediaPlayer(duckSound);
+			duckPlayer.play();
+			viewBracket(primaryStage);
+		});
 		
-		hbBracketBtn.setAlignment(Pos.BOTTOM_RIGHT);
-		hbBracketBtn.getChildren().add(bracketBtn);
-		grid.add(hbBracketBtn, 2, 4);
-		
-		Button loadBtn = new Button("Load File");
-		//TODO loadBtn.setOnAction(e -> loadFile(File f));
-		loadBtn.setPrefSize(120, 40);
-		HBox hbLoadBtn = new HBox(10);
-		hbLoadBtn.setAlignment(Pos.BOTTOM_RIGHT);
-		hbLoadBtn.getChildren().add(loadBtn);
-		grid.add(hbLoadBtn, 1, 4);
-		
-		primaryStage.setScene(mainMenu);
-		primaryStage.show();
-		
-		
+		primaryStage.setScene(menuScene);
+		primaryStage.show();	
 	}
 	
 	//Default styling (feel free to mess with these)
@@ -130,9 +142,7 @@ public class Main extends Application {
 				root.getChildren().add(scoreBoxes[p]);
 			}			
 			Button setScores = new Button();
-			
 			Button completeGame = new Button();
-			
 		});
 	}
 	
@@ -145,8 +155,8 @@ public class Main extends Application {
 		
 		//Defaults (based around a 16 team bracket)
 		HBox[] remove = null;
-		int toRemove = -1;
-		int numGames = games.size(),
+		int toRemove = -1,
+		numGames = games.size(),
 		x, y, xDif, yDif,
 		gameCount = 0,
 		iterations  = 31 - Integer.numberOfLeadingZeros(numGames);
@@ -218,16 +228,77 @@ public class Main extends Application {
 		optionsBtn.setLayoutY(25);
 		root.getChildren().add(optionsBtn);
 		
-		
-		
 
 		//root.getChildren().remove(root.getChildren().size() - 1);
 		primaryStage.setScene(scene1);
 		primaryStage.show(); 
 	}
 	
-	public static void main(String[] args) {
-		int tempTeams = 64;
+	
+	private static void loopMusic(boolean next) { 
+		int currInd = music.indexOf(musicPlayer.getMedia());
+		loopMusic((next) 
+				? (currInd + 1 >= music.size()) ? 0 : currInd + 1
+				: (currInd - 1 < 0) ? music.size() - 1 : currInd - 1);
+	}
+	private static void loopMusic(String path){ loopMusic(music.indexOf(path));} //Overloaded
+	private static void loopMusic(int mIndex){
+		if (musicPlayer != null) musicPlayer.stop();
+		Media songMedia = music.get(mIndex);
+		try {
+			currentSong = java.net.URLDecoder.decode(songMedia.getSource(), "UTF-8"); //decodes
+			currentSong = currentSong.substring(currentSong.lastIndexOf("/") + 1).substring(currentSong.lastIndexOf("\\") + 1); //removes file path
+			currentSong = currentSong.substring(0, currentSong.lastIndexOf('.')); //gets rid of extension
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(currentSong);
+		musicPlayer = new MediaPlayer(music.get(mIndex));
+		musicPlayer.setOnEndOfMedia(new Runnable() {public void run(){musicPlayer.seek(Duration.ZERO);}} );
+		musicPlayer.play();
+	}
+
+	private static void buildDefaults(Pane panel){ //This can add toolbars and such
+		HBox musicBar = new HBox(3);
+		musicBar.setLayoutX(0);
+		musicBar.setLayoutY(frameHeight-25);
+		musicBar.setPrefWidth(frameWidth);
+		musicBar.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+		musicBar.setAlignment(Pos.BOTTOM_RIGHT);
+		musicBar.setMinHeight(25);
+		
+		Text cSongDisplay = new Text("Now Playing: " + currentSong);
+		cSongDisplay.setFont(Font.font("Verdana", 20));
+		
+		Button pSong = new Button("Previous Song");
+		pSong.setOnAction(e -> {
+			loopMusic(false);
+			cSongDisplay.setText("Now Playing: " + currentSong);
+		});
+		Button nSong = new Button("Next Song");
+		nSong.setOnAction(e -> {
+			loopMusic(true);
+			cSongDisplay.setText("Now Playing: " + currentSong);
+		});
+	
+		musicBar.getChildren().addAll(cSongDisplay, pSong, nSong);
+		panel.getChildren().add(musicBar);
+		
+	}
+	
+	public static void initVars(){
+		
+		File musicFolder = new File("res/snd/music");
+		File[] musicFiles = musicFolder.listFiles();
+		
+		for (File f : musicFiles){
+			music.add(new Media(f.toURI().toString()));
+			System.out.println(f.toURI().toString());
+		}
+		loopMusic(1);
+		
+		int tempTeams = 32;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
@@ -240,6 +311,12 @@ public class Main extends Application {
 		
 		b = new Bracket(teamList);
 		b.assignGames();
+		
+	}
+	
+	public static void main(String[] args) {
+		
+		initVars();
 		launch(args);
 	}
 }

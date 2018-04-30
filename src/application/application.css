@@ -1,5 +1,9 @@
 .root {
-	 -fx-background-color: lightslategray  /* TODO pick a nice color :) */
+	 -fx-background-color: #C6012F  /* TODO pick a nice color :) */
+}
+
+.circle {
+	-fx-cursor: crosshair
 }
 
 .button {
