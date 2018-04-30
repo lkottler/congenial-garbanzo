@@ -426,7 +426,7 @@ public class Main extends Application {
 		loopMusic(3);
 		musicPlayer.setVolume(.25); //init sound to 25%
 		
-		int tempTeams = 8;
+		int tempTeams = 32;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
