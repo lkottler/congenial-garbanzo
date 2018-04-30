@@ -16,3 +16,11 @@
 .button:hover {
     -fx-background-color: linear-gradient(#bc3315, #d0451b);
 }
+
+.image {
+	-fx-opacity: 70%;
+}
+
+.image:hover {
+	-fx-opacity: 100%;
+}
