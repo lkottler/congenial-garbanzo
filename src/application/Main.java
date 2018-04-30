@@ -144,6 +144,7 @@ public class Main extends Application {
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
 		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
 		int[] scores = workingGame.getScores();
+		if (workingGame.isCompleted()) btn.getStyleClass().add("CompletedGame");
 		btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
 		btn.setOnAction(e -> {
 			
