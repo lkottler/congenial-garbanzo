@@ -35,7 +35,7 @@ public class Game {
 	
 	//Getters
 	public int[] getScores()     {return score;}
-	public boolean getCompleted(){return isCompleted;}
+	public boolean isCompleted(){return isCompleted;}
 	public Team getWinner()      {return winner;}
 	public Team getTeam1()       {return team1;}
 	public Team getTeam2()       {return team2;}

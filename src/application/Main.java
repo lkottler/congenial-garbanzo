@@ -9,6 +9,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -24,6 +25,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -74,7 +76,6 @@ public class Main extends Application {
 		buildDefaults(menuPane);
 		Scene menuScene = new Scene(menuPane, frameWidth, frameHeight);
 		menuScene.getStylesheets().add("application/application.css");
-		System.out.println(menuScene.getHeight() + " " + menuScene.getWidth());
 		
 		int[] cData = new int[]{frameWidth / 2, frameHeight /2, 300};
 		Circle whiteP = new Circle();
@@ -86,7 +87,7 @@ public class Main extends Application {
 		// pay no attention to this code.
 		Image secret = loadImage("menu.png");
 		ImageView imvS = new ImageView(secret);
-		imvS.setOpacity(0.010);
+		imvS.setOpacity(0.015);
 		imvS.setScaleX((cData[2] * 2) / (secret.getWidth()));
 		imvS.setScaleY((cData[2] * 2) / (secret.getHeight()));
 		HBox secretRegion = new HBox(imvS);
@@ -106,8 +107,6 @@ public class Main extends Application {
 		
 		imvW.getStyleClass().add("image");
 		imvW.setOnMouseClicked(e -> viewBracket(primaryStage));
-		
-		
 		
 		Button bracketBtn = new Button("View Bracket");
 		bracketBtn.setOnAction(e -> {
@@ -147,9 +146,19 @@ public class Main extends Application {
 		int[] scores = workingGame.getScores();
 		btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
 		btn.setOnAction(e -> {
+			
+			root.getChildren().remove(root.lookup("#removeVBox"));
+			
+			VBox scoringOps = new VBox();
+			scoringOps.setAlignment(Pos.TOP_CENTER);
+			scoringOps.setId("removeVBox");
+			scoringOps.setLayoutX(frameWidth - 140);
+			scoringOps.setLayoutY(75);
+			scoringOps.setSpacing(10);
+			
 			Label[] teamLabels = new Label[]{
 					new Label(t1Name + "'s Score:"),
-					new Label(t2Name + "'s Score:")};;
+					new Label(t2Name + "'s Score:")};
 			TextField[] textFields = new TextField[]{
 					new TextField(), //team1 textfield
 					new TextField()};//team2 textfield
@@ -157,17 +166,53 @@ public class Main extends Application {
 					new HBox(), new HBox()
 			};
 			for (int p = 0; p < 2; p++){
-				root.getChildren().remove(root.lookup("#toRemove-" + p));
+				if (scores[p] != 0) textFields[p].setText("" + scores[p]);
 				textFields[p].setPrefSize(30,10);
-				scoreBoxes[p].setId("toRemove-" + p);
-				scoreBoxes[p].setSpacing(5);
-				scoreBoxes[p].setLayoutX(paneWidth - (teams[p].getTeamName().length()*5) + 85);
-				scoreBoxes[p].setLayoutY(75 + p*30);
+				scoreBoxes[p].setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+				scoreBoxes[p].setSpacing(44 - (teams[p].getTeamName().length()*6));
 				scoreBoxes[p].getChildren().addAll(teamLabels[p],textFields[p]);
-				root.getChildren().add(scoreBoxes[p]);
+				scoringOps.getChildren().add(scoreBoxes[p]);
 			}			
-			Button setScores = new Button();
-			Button completeGame = new Button();
+			Button setScores = new Button("Set Scores");
+			setScores.setOnAction(p -> {
+				if (textFields[0].getText().matches("-?\\d+")){ //-? --> negative sign (one or none), \\d+ --> one or more digits
+					scores[0] = Integer.parseInt(textFields[0].getText());
+					workingGame.setTeam1Score(scores[0]);
+					btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
+				} if (textFields[1].getText().matches("-?\\d+")){
+					scores[1] = Integer.parseInt(textFields[1].getText());
+					workingGame.setTeam2Score(scores[1]);
+					btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
+				}
+			});
+			
+			Button completeGame = new Button("Complete Game");
+			completeGame.setOnAction(p -> {
+				workingGame.completeGame();
+				btn.getStyleClass().add("completedGame");
+				if (b.newRound()){
+					int thisGame = Integer.parseInt(btn.getId().substring(4));
+					int size = b.getSize() / 2;
+					int offset = 0;
+					while (thisGame > offset){
+						offset += size;
+						size /= 2;
+					}
+					ArrayList<Game> tempGames = b.getGames();
+					for (int i = 0; i < size; i++){
+						Button currBtn = (Button) root.lookup("#btn-" + (offset + i));
+						System.out.println(currBtn == null);
+						System.out.println("Couldn't find: #btn-" + (offset + i));
+						if (tempGames.size() == 1) {
+							//Build championship button
+						} else buildBtn(currBtn, tempGames.get(i), root, paneWidth);
+					}
+				}
+			});
+			
+			scoringOps.getChildren().addAll(setScores, completeGame);
+			
+			root.getChildren().addAll(scoringOps);
 		});
 	}
 	
@@ -217,6 +262,8 @@ public class Main extends Application {
 				Button btn = new Button();
 				btn.setPrefSize(btnWidth, btnHeight);
 				btn.setStyle("-fx-font-size: " + fontSize + "px");
+				System.out.println("Created button: btn-" + gameCount);
+				btn.setId("btn-" + gameCount);
 				if (gameCount >= numGames){ //NO FUNCTION BUTTON
 					btn.setText("");
 				} else{
@@ -238,7 +285,8 @@ public class Main extends Application {
 				gameCount++;
 			}
 		}
-		//put CHAMPIONSHIP in HERE TODO
+		/*
+		//put CHAMPIONSHIP TODO
 		Button championBtn = new Button();
 		championBtn.setText("ARE YOU READY");
 		championBtn.setStyle("-fx-font-size: " + fontSize*1.5 + "px");
@@ -246,8 +294,10 @@ public class Main extends Application {
 		championBtn.setLayoutX((maxX-btnWidth) / 2);
 		championBtn.setLayoutY(maxY / 2 - btnHeight*1.8);
 		root.getChildren().add(championBtn);
+		*/
 		
-		// SIDE BAR RIGHT SIDE
+		
+		// SIDE BAR RIGHT SIDE // TODO: ADD MORE OPTIONS
 		Button optionsBtn = new Button("Additional Options");
 		optionsBtn.setOnAction(KevinIsHotWhatDoYouGuysThink -> menuScreen(primaryStage));
 		optionsBtn.setMinSize(120, 40);
@@ -255,8 +305,6 @@ public class Main extends Application {
 		optionsBtn.setLayoutY(25);
 		root.getChildren().add(optionsBtn);
 		
-
-		//root.getChildren().remove(root.getChildren().size() - 1);
 		primaryStage.setScene(scene1);
 		primaryStage.show(); 
 	}
@@ -268,7 +316,6 @@ public class Main extends Application {
 				? (currInd + 1 >= music.size()) ? 0 : currInd + 1
 				: (currInd - 1 < 0) ? music.size() - 1 : currInd - 1);
 	}
-	private static void loopMusic(String path){ loopMusic(music.indexOf(path));} //Overloaded
 	private static void loopMusic(int mIndex){
 		double currVol = 100;
 		String currentSong = "Hmm, something's not quite right...";
@@ -286,7 +333,6 @@ public class Main extends Application {
 			musicPlayer.stop();
 			currVol = musicPlayer.getVolume();
 			musicPlayer.dispose();
-			System.out.println(currentSong);
 		}
 		
 		cSongDisplay.setText("Now Playing: " + currentSong);
@@ -304,9 +350,9 @@ public class Main extends Application {
 		musicButtons.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 		musicButtons.setAlignment(Pos.BOTTOM_RIGHT);
 		musicButtons.setLayoutX(400);
-		musicButtons.setMinWidth(370);
+		musicButtons.setMinWidth(345);
 		
-		musicText.setMinWidth(frameWidth - 370);
+		musicText.setMinWidth(frameWidth - 345);
 		
 		musicBar.setLayoutX(0);
 		musicBar.setLayoutY(frameHeight - 25);
@@ -315,11 +361,13 @@ public class Main extends Application {
 		musicBar.setAlignment(Pos.BOTTOM_LEFT);
 		musicBar.setMinHeight(25);
 		
-		Button pSong = new Button("Previous Song");
+		Button pSong = new Button("Previous");
+		pSong.getStyleClass().add("soundButton");
 		pSong.setOnAction(e -> {
 			loopMusic(false);
 		});
-		Button nSong = new Button("Next Song");
+		Button nSong = new Button("Next");
+		nSong.getStyleClass().add("soundButton");
 		nSong.setOnAction(e -> {
 			loopMusic(true);
 		});
@@ -341,7 +389,7 @@ public class Main extends Application {
 					volText.setText(Integer.toString(i) + "%");
 					musicPlayer.setVolume(i / 100.0);
 				});
-		volumeSlider.setValue(150);
+		volumeSlider.setValue(musicPlayer.getVolume() * 100);
 		
 		musicText.getChildren().add(cSongDisplay);
 		musicButtons.getChildren().addAll(volText, volumeSlider, pSong, nSong);
@@ -362,7 +410,7 @@ public class Main extends Application {
 		KeyFrame initFrame = new KeyFrame(Duration.ZERO, initKeyValue);
 		
 		KeyValue endKeyValue = new KeyValue(cSongDisplay.translateXProperty(), -1.0 * msgWidth);
-		KeyFrame endFrame = new KeyFrame(Duration.seconds(7), endKeyValue);
+		KeyFrame endFrame = new KeyFrame(Duration.seconds(8), endKeyValue);
 		
 		Timeline timeline = new Timeline(initFrame, endFrame);
 		
@@ -375,9 +423,10 @@ public class Main extends Application {
 		for (File f : musicFiles){
 			music.add(new Media(f.toURI().toString()));
 		}
-		loopMusic(2);
+		loopMusic(3);
+		musicPlayer.setVolume(.25); //init sound to 25%
 		
-		int tempTeams = 32;
+		int tempTeams = 8;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
@@ -389,7 +438,7 @@ public class Main extends Application {
 		}
 		
 		b = new Bracket(teamList);
-		b.assignGames();
+		b.initGames();
 		
 	}
 	
