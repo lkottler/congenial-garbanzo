@@ -140,25 +140,31 @@ public class Main extends Application {
 		public int val() { return value;}
 	}
 	
-	private void updateGameBtn(Button btn, Game game){
+	private static int getParentIndex(int total, int curr){
+		int offset = 0;
+		int temp = 0;
+		while (true){
+			offset += total;
+			if (curr < offset) break;
+			temp = offset;
+			total /= 2;
+		}
+		return offset + (curr - temp)/2;
+	}
+	
+	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth){
 		String buttonText = "";
 		Team t1 = game.getTeam1(), t2 = game.getTeam2();
 		int[] scores = game.getScores();
 		
-		if (t1 != null) buttonText += t1.getTeamName() + ": " + scores[0] + "\n";
-		else buttonText += "\n";
-		
-		if (t2 != null) buttonText += t2.getTeamName() + ": " + scores[1];	
-		btn.setText(buttonText);
-	}
-	
-	private int getParentIndex(int total, int curr){
-		int offset = 0;
-		while (curr > offset){
-			offset += total;
-			total /= 2;
-		}
-		return offset + total;
+		if (t1 != null && t2 != null){
+			buildBtn(btn, game, root, paneWidth); //add functionality
+		} 
+		else btn.setText((t1 == null && t2 == null)  //simply change text
+						? ""
+						: (t1 == null)
+								? "______________\n" + t2.getTeamName() + ": " + scores[1]
+								: t1.getTeamName() + ": " + scores[0] + "\n______________");
 	}
 	
 	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth){
@@ -166,6 +172,7 @@ public class Main extends Application {
 		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
 		int[] scores = workingGame.getScores();
 		if (workingGame.isCompleted()) btn.getStyleClass().add("CompletedGame");
+
 		btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
 		btn.setOnAction(e -> {
 			
@@ -211,15 +218,21 @@ public class Main extends Application {
 			
 			Button completeGame = new Button("Complete Game");
 			completeGame.setOnAction(p -> {
-				
-				int thisGame = Integer.parseInt(btn.getId().substring(4)); 
-				int parent = getParentIndex(b.getSize() / 2, thisGame);
+				ArrayList<Game> games = b.getGames();
+				int thisGame = Integer.parseInt(btn.getId().substring(4));
+				Game g = games.get(thisGame);
+				b.completeGame(g);
+				while (thisGame < games.size() - 1){ //recursively fix games
+					g = games.get(thisGame);
+					Button thisGameBtn = (Button) root.lookup("#btn-" + thisGame);
+					updateGameBtn(thisGameBtn, g, root, paneWidth);
+					thisGame = getParentIndex(b.getSize() / 2, thisGame);
+				}
 				
 				workingGame.completeGame();
 				btn.getStyleClass().add("completedGame");
 				
-				
-				
+
 			});
 			
 			scoringOps.getChildren().addAll(setScores, completeGame);

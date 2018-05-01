@@ -30,6 +30,8 @@ public class Game {
 	}
 	
 	//Setters
+	public void setTeam1(Team team1)     {this.team1    = team1;}
+	public void setTeam2(Team team2)     {this.team2    = team2;}
 	public void setTeam1Score(int score) {this.score[0] = score;}
 	public void setTeam2Score(int score) {this.score[1] = score;}
 	

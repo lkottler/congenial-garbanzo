@@ -36,6 +36,34 @@ public class Bracket {
 		else System.out.println("Failed to create games. Invalid number of teams: " +numOfTeams);
 	}
 	
+	private static int getParentIndex(int total, int curr){
+		int offset = 0;
+		int temp = 0;
+		while (true){
+			offset += total;
+			if (curr < offset) break;
+			temp = offset;
+			total /= 2;
+		}
+		return offset + (curr - temp)/2;
+	}
+	
+	public void completeGame(int gameIndex){ this.completeGame(gameIndex, games.get(gameIndex));};
+	public void completeGame(Game thisGame){ this.completeGame(games.indexOf(thisGame), thisGame); };
+	private void completeGame(int gameIndex, Game thisGame){
+		thisGame.completeGame();
+		if (gameIndex != games.size() - 1){
+			System.out.println(games.size() - 1 + " " + gameIndex);
+			Game parentGame = games.get(getParentIndex(this.getSize() / 2, gameIndex));
+			if (gameIndex % 2 == 0)
+				 parentGame.setTeam1(thisGame.getWinner());
+			else parentGame.setTeam2(thisGame.getWinner());
+			if (parentGame.isCompleted()) this.completeGame(parentGame);
+		}
+		
+	}
+	
+	
 	public boolean newRound(){ //Returns whether it was successful creating a new round of games.
 		ArrayList<Game> tempGames = new ArrayList<Game>();
 		for (int i = 0; i < games.size(); i+=2){
