@@ -17,8 +17,15 @@
 	-fx-background-color: linear-gradient(yellow, white);
 }
 
+.modifiedGame {
+	-fx-background-color: linear-gradient(coral, orange)
+}
+.modifiedGame:hover {
+	-fx-background-color: linear-gradient(orange, coral)
+}
+
+
 .completedGame {
-	
 	-fx-background-color: linear-gradient(lightblue, blue);
 }
 

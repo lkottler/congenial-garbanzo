@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -53,8 +54,6 @@ public class Main extends Application {
 		primaryStage.setResizable(false);
 		primaryStage.setMinWidth(frameWidth);
 		primaryStage.setMinHeight(frameHeight);
-		//primaryStage.setMaxWidth(frameWidth);
-		//primaryStage.setMaxHeight(frameHeight);
 		menuScreen(primaryStage);
 	}
 	
@@ -93,6 +92,11 @@ public class Main extends Application {
 		HBox secretRegion = new HBox(imvS);
 		secretRegion.setLayoutX(cData[0] - cData[2]+ 57);
 		secretRegion.setLayoutY(cData[1] - cData[2]+ 57);
+		
+		FadeTransition fadeIn = new FadeTransition(Duration.minutes(10), imvS);
+		fadeIn.setFromValue(0);
+		fadeIn.setToValue(1);
+		fadeIn.play();
 		
 		menuPane.getChildren().addAll(whiteP, secretRegion);
 		
@@ -163,15 +167,15 @@ public class Main extends Application {
 		else btn.setText((t1 == null && t2 == null)  //simply change text
 						? ""
 						: (t1 == null)
-								? "______________\n" + t2.getTeamName() + ": " + scores[1]
-								: t1.getTeamName() + ": " + scores[0] + "\n______________");
+								? "____________\n" + t2.getTeamName() + ": " + scores[1]
+								: t1.getTeamName() + ": " + scores[0] + "\n____________");
 	}
 	
 	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth){
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
 		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
 		int[] scores = workingGame.getScores();
-		if (workingGame.isCompleted()) btn.getStyleClass().add("CompletedGame");
+		if (workingGame.isCompleted()) btn.getStyleClass().add("completedGame");
 
 		btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
 		btn.setOnAction(e -> {
@@ -204,24 +208,35 @@ public class Main extends Application {
 			}			
 			Button setScores = new Button("Set Scores");
 			setScores.setOnAction(p -> {
+				boolean[] changed = new boolean[]{false, false};		
 				if (textFields[0].getText().matches("-?\\d+")){ //-? --> negative sign (one or none), \\d+ --> one or more digits
-					scores[0] = Integer.parseInt(textFields[0].getText());
+					int newScore = Integer.parseInt(textFields[0].getText());
+					changed[0] = newScore != scores[0];
+					scores[0] = newScore;
 					workingGame.setTeam1Score(scores[0]);
-					//updateGameButton(btn);
 					btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
 				} if (textFields[1].getText().matches("-?\\d+")){
+					int newScore = Integer.parseInt(textFields[1].getText());
+					changed[1] = newScore != scores[1];
 					scores[1] = Integer.parseInt(textFields[1].getText());
 					workingGame.setTeam2Score(scores[1]);
 					btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
 				}
+				if (workingGame.isCompleted() && (changed[0] || changed[1])){
+					btn.getStyleClass().removeAll("completedGame");
+					btn.getStyleClass().add("modifiedGame");
+				}
+				
 			});
 			
 			Button completeGame = new Button("Complete Game");
 			completeGame.setOnAction(p -> {
+				
+				b.completeGame(workingGame);
+
 				ArrayList<Game> games = b.getGames();
 				int thisGame = Integer.parseInt(btn.getId().substring(4));
-				Game g = games.get(thisGame);
-				b.completeGame(g);
+				Game g = workingGame;//games.get(thisGame);
 				while (thisGame < games.size() - 1){ //recursively fix games
 					g = games.get(thisGame);
 					Button thisGameBtn = (Button) root.lookup("#btn-" + thisGame);
@@ -231,7 +246,6 @@ public class Main extends Application {
 				
 				workingGame.completeGame();
 				btn.getStyleClass().add("completedGame");
-				
 
 			});
 			
@@ -286,11 +300,11 @@ public class Main extends Application {
 				btn.setPrefSize(btnWidth, btnHeight);
 				btn.setStyle("-fx-font-size: " + fontSize + "px");
 				btn.setId("btn-" + gameCount);
-				if (gameCount >= numGames){ //NO FUNCTION BUTTON
-					btn.setText("");
+				Game workingGame = b.getGames().get(gameCount);
+				if (workingGame.getTeam1() == null && workingGame.getTeam2() == null){ //NO FUNCTION BUTTON
+					updateGameBtn(btn, workingGame, root, maxX);
 				} else{
 					if (gameCount < numGames){
-						Game workingGame = b.getGames().get(gameCount);
 						buildBtn(btn, workingGame, root, maxX);
 					}
 				}
@@ -442,13 +456,16 @@ public class Main extends Application {
 		File musicFolder = new File("res/snd/music");
 		File[] musicFiles = musicFolder.listFiles();
 		
+		int bennieAndtheJets = 0;
 		for (File f : musicFiles){
+			if (f.toString().contains("Elton John"))
+				bennieAndtheJets = music.size();
 			music.add(new Media(f.toURI().toString()));
 		}
-		loopMusic(2);
+		loopMusic(bennieAndtheJets);
 		musicPlayer.setVolume(.25); //init sound to 25%
 		
-		int tempTeams = 16;
+		int tempTeams = 32;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);

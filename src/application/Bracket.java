@@ -53,7 +53,6 @@ public class Bracket {
 	private void completeGame(int gameIndex, Game thisGame){
 		thisGame.completeGame();
 		if (gameIndex != games.size() - 1){
-			System.out.println(games.size() - 1 + " " + gameIndex);
 			Game parentGame = games.get(getParentIndex(this.getSize() / 2, gameIndex));
 			if (gameIndex % 2 == 0)
 				 parentGame.setTeam1(thisGame.getWinner());
