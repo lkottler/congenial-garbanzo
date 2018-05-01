@@ -9,10 +9,10 @@ public class Game {
 	
 
 	Game(){
-		team1 = new Team(); team2 = new Team();
-		winner = team1;
+		team1 = null; team2 = null;
+		winner = null;
 		@SuppressWarnings("unused")
-		boolean isCompleted = true;
+		boolean isCompleted = false;
 		score = new int[]{0, 0};
 	}
 	Game(Team team1, Team team2){

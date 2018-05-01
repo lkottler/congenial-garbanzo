@@ -140,6 +140,27 @@ public class Main extends Application {
 		public int val() { return value;}
 	}
 	
+	private void updateGameBtn(Button btn, Game game){
+		String buttonText = "";
+		Team t1 = game.getTeam1(), t2 = game.getTeam2();
+		int[] scores = game.getScores();
+		
+		if (t1 != null) buttonText += t1.getTeamName() + ": " + scores[0] + "\n";
+		else buttonText += "\n";
+		
+		if (t2 != null) buttonText += t2.getTeamName() + ": " + scores[1];	
+		btn.setText(buttonText);
+	}
+	
+	private int getParentIndex(int total, int curr){
+		int offset = 0;
+		while (curr > offset){
+			offset += total;
+			total /= 2;
+		}
+		return offset + total;
+	}
+	
 	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth){
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
 		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
@@ -179,6 +200,7 @@ public class Main extends Application {
 				if (textFields[0].getText().matches("-?\\d+")){ //-? --> negative sign (one or none), \\d+ --> one or more digits
 					scores[0] = Integer.parseInt(textFields[0].getText());
 					workingGame.setTeam1Score(scores[0]);
+					//updateGameButton(btn);
 					btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
 				} if (textFields[1].getText().matches("-?\\d+")){
 					scores[1] = Integer.parseInt(textFields[1].getText());
@@ -189,24 +211,15 @@ public class Main extends Application {
 			
 			Button completeGame = new Button("Complete Game");
 			completeGame.setOnAction(p -> {
+				
+				int thisGame = Integer.parseInt(btn.getId().substring(4)); 
+				int parent = getParentIndex(b.getSize() / 2, thisGame);
+				
 				workingGame.completeGame();
 				btn.getStyleClass().add("completedGame");
-				if (b.newRound()){
-					int thisGame = Integer.parseInt(btn.getId().substring(4));
-					int size = b.getSize() / 2;
-					int offset = 0;
-					while (thisGame > offset){
-						offset += size;
-						size /= 2;
-					}
-					ArrayList<Game> tempGames = b.getGames();
-					for (int i = 0; i < size; i++){
-						Button currBtn = (Button) root.lookup("#btn-" + (offset + i));
-						if (tempGames.size() == 1) {
-							//Build championship button
-						} else buildBtn(currBtn, tempGames.get(i), root, paneWidth);
-					}
-				}
+				
+				
+				
 			});
 			
 			scoringOps.getChildren().addAll(setScores, completeGame);
@@ -227,7 +240,7 @@ public class Main extends Application {
 		//Defaults (based around a 16 team bracket)
 		HBox[] remove = null;
 		int toRemove = -1,
-		numGames = games.size(),
+		numGames = b.getSize() / 2,
 		x, y, xDif, yDif,
 		gameCount = 0,
 		iterations  = 31 - Integer.numberOfLeadingZeros(numGames);
