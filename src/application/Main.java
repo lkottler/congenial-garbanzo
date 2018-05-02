@@ -79,8 +79,7 @@ public class Main extends Application {
 	 * add any additional fun things: choose theme, change font, change genre
 	 * 
 	 */
-	private void optionScreen(Stage primaryStage)
-	{
+	private void optionScreen(Stage primaryStage){
 		primaryStage.setTitle("Option Menu");
 		Pane optionPane = new Pane();
 		
@@ -103,7 +102,6 @@ public class Main extends Application {
 	 * Main menu scene loaded
 	 */
 	private void menuScreen(Stage primaryStage){
-		
 		primaryStage.setTitle("Welcome to my Ȟ̸̳͚̝̖̂ͪ̈́́ȩ͙͚͇͎͓̣ͤá̞̖̬͔̟̈́̆͋̌̀͜͟v̸̙͎̇ͬͪͬͤē̛̖͙̻̩̩̻͌̚͠n͍̬͈̝̙̱̱̰̔ͩͣͣ̂ͧ̓̃"); //maybe we need to change
 		Pane menuPane = new Pane();
 		buildDefaults(menuPane);										//sound bar
@@ -180,45 +178,45 @@ public class Main extends Application {
 		public int scale(double scalar) {return (int) (value * scalar);}
 		public int val() { return value;}
 	}
-	/*
-	 * Gets next row in of the games
-	 * It gets where the next game will move on from
-	 */
-	
-	private static int getParentIndex(int total, int curr){
-		int offset = 0;
-		int temp = 0;
-		while (true){
-			offset += total;
-			if (curr < offset) break;
-			temp = offset;
-			total /= 2;
-		}
-		return offset + (curr - temp)/2;
-	}
-	
-	/*
-	 * Changes text of button
-	 * when a child game is finished and updated parent that new game is ready
+
+	/* TODO
+	 * this function will display the scores of the final game, allow locking in of scores, and display the top 3
 	 * 
 	 */
-	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth){
-		Team t1 = game.getTeam1(), t2 = game.getTeam2();
-		int[] scores = game.getScores();
+	private void champScene(Stage primaryStage){
+		Pane championship = new Pane();
+		buildDefaults(championship); //music bar
+		Scene champScene = new Scene(championship);
+		champScene.getStylesheets().add("application/css/mainMenu.css"); //TODO create styling for this scene.
+		ArrayList<Game> games = b.getGames();
 		
-		if (t1 != null && t2 != null){
-			buildBtn(btn, game, root, paneWidth); //add functionality
-		} 
-		else btn.setText((t1 == null && t2 == null)  //simply change text
-						? ""
-						: (t1 == null)
-								? "____________\n" + t2.getTeamName() + ": " + scores[1]
-								: t1.getTeamName() + ": " + scores[0] + "\n____________");
+		// Default button to go back (feel free to change)
+		Button returnBtn = new Button("Back");
+		returnBtn.setLayoutX(frameWidth-90);
+		returnBtn.setLayoutY(frameHeight-100);
+		returnBtn.setOnAction(e -> viewBracket(primaryStage));
+		championship.getChildren().add(returnBtn);
+		
+		if (games.size() == 1){ //hard code in one winner (no possible game to display)
+			
+		} else { //else statement may or may not be necessary.
+			
+			
+			
+		
+			
+			
+			
+		}
+		primaryStage.setScene(champScene);
+		primaryStage.show();
 	}
 	
 	/*
 	 * Kevin
-	 * 
+	 *  **Consider using the champScene method I created for a more exciting "Final match" screen.
+	 *  Cheers, Logan
+	 *  also cool if you find another way to be more suitable.
 	 */
 	private void buildChampBtn(Button btn, Game champGame, Pane root, int paneWidth, Team team1, Team team2) {
 		int[] scores = champGame.getScores();
@@ -245,12 +243,45 @@ public class Main extends Application {
 	}
 	
 	/*
+	 * Gets next row in of the games
+	 * It gets where the next game will move on from
+	 */
+	private static int getParentIndex(int total, int curr){
+		int offset = 0;
+		int temp = 0;
+		while (true){
+			offset += total;
+			if (curr < offset) break;
+			temp = offset;
+			total /= 2;
+		}
+		return offset + (curr - temp)/2;
+	}
+	
+	/*
+	 * Changes text of button
+	 * when a child game is finished and updated parent that new game is ready
+	 * 
+	 */
+	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth, Stage primaryStage){
+		Team t1 = game.getTeam1(), t2 = game.getTeam2();
+		int[] scores = game.getScores();
+		
+		if (t1 != null && t2 != null){
+			buildBtn(btn, game, root, paneWidth, primaryStage); //add functionality
+		} 
+		else btn.setText((t1 == null && t2 == null)  //simply change text
+						? ""
+						: (t1 == null)
+								? "____________\n" + t2.getTeamName() + ": " + scores[1]
+								: t1.getTeamName() + ": " + scores[0] + "\n____________");
+	}
+	/*
 	 * build a bracket button
 	 * and it adds funtionality of a button
 	 * prompts you to enter score when it it's ready
 	 */
-	
-	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth){
+	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth, Stage primaryStage){
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
 		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
 		int[] scores = workingGame.getScores();
@@ -313,12 +344,30 @@ public class Main extends Application {
 				ArrayList<Game> games = b.getGames();
 				int thisGame = Integer.parseInt(btn.getId().substring(4));
 				Game g = workingGame;//games.get(thisGame);
-				while (thisGame < games.size() - 1){ //recursively fix games
+				
+				boolean championReady = (
+										games.get(games.size()-2).isCompleted() &&
+										games.get(games.size()-3).isCompleted());
+				
+				if (championReady) {
+					Button championBtn = new Button();
+					championBtn.setText("Championship");
+					championBtn.setStyle("-fx-font-size: 18px");
+					championBtn.setPrefSize(200, 100);
+					championBtn.setLayoutX((frameWidth - 180) / 2 - 55);
+					championBtn.setLayoutY((frameHeight - 140)/ 2 - 200);
+					championBtn.setOnAction(z -> champScene(primaryStage));
+
+					root.getChildren().add(championBtn);
+				}
+				
+				while (thisGame < games.size() - 1){ //recursively fix parents
 					g = games.get(thisGame);
 					Button thisGameBtn = (Button) root.lookup("#btn-" + thisGame);
-					updateGameBtn(thisGameBtn, g, root, paneWidth);
+					updateGameBtn(thisGameBtn, g, root, paneWidth, primaryStage);
 					thisGame = getParentIndex(b.getSize() / 2, thisGame);
-				}
+				} 
+				
 				workingGame.completeGame();
 				btn.getStyleClass().add("completedGame");
 			});
@@ -338,6 +387,9 @@ public class Main extends Application {
 		scene1.getStylesheets().add("application/css/bracket.css");
 		
 		//Defaults (based around a 16 team bracket)
+		
+		ArrayList<Game> games = b.getGames();
+		
 		int
 		numGames = b.getSize() / 2,
 		x, y, xDif, yDif,
@@ -362,6 +414,17 @@ public class Main extends Application {
 				  ySpace = (int) (maxY/(numGames/2.0)),
 				  xSpace = (int) (maxX/(2.0*iterations)) - btnWidth;
 		
+		if (b.getSize() < 3 || (games.get(games.size() - 3).isCompleted() && games.get(games.size() - 2).isCompleted())){
+			Button championBtn = new Button();
+			championBtn.setText("Championship");
+			championBtn.setStyle("-fx-font-size: 18px");
+			championBtn.setPrefSize(200, 100);
+			championBtn.setLayoutX((frameWidth - 180) / 2 - 55);
+			championBtn.setLayoutY((frameHeight - 140)/ 2 - 200);
+			championBtn.setOnAction(e -> champScene(primaryStage));
+			root.getChildren().add(championBtn);
+		}
+		
 		for (int i = 0; i < iterations; i++){
 			int subNumGames = numGames / (1 << i);
 			xDif = i*(btnWidth) + i*xSpace;
@@ -372,13 +435,11 @@ public class Main extends Application {
 				btn.setPrefSize(btnWidth, btnHeight);
 				btn.setStyle("-fx-font-size: " + fontSize + "px");
 				btn.setId("btn-" + gameCount);
-				Game workingGame = b.getGames().get(gameCount);
-				if (workingGame.getTeam1() == null && workingGame.getTeam2() == null){ //NO FUNCTION BUTTON
-					updateGameBtn(btn, workingGame, root, maxX);
+				Game workingGame = games.get(gameCount);
+				if (workingGame.getTeam1() == null || workingGame.getTeam2() == null){ //NO FUNCTION BUTTON
+					updateGameBtn(btn, workingGame, root, maxX, primaryStage);
 				} else{
-					if (gameCount < numGames){
-						buildBtn(btn, workingGame, root, maxX);
-					}
+					buildBtn(btn, workingGame, root, maxX, primaryStage);
 				}
 				//TODO fix X spacing
 				x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif - btnWidth;
@@ -393,18 +454,10 @@ public class Main extends Application {
 				gameCount++;
 			}
 		}
-	
-		//put CHAMPIONSHIP TODO
 
 			
-		Button championBtn = new Button();
-		championBtn.setText("ARE YOU READY");
-		championBtn.setStyle("-fx-font-size: " + fontSize*1.5 + "px");
-		championBtn.setPrefSize(btnWidth*1.5, btnHeight*1.5);
-		championBtn.setLayoutX((maxX-btnWidth) / 2);
-		championBtn.setLayoutY(maxY / 2 - btnHeight*1.8);
-		root.getChildren().add(championBtn);
 
+		/*
 		if (b.getGames().get(b.getSize() -2).isCompleted() 
 				&& b.getGames().get(b.getSize() -1).isCompleted()) {
 			Team team1 = b.getGames().get(b.getSize() -2).getWinner();
@@ -412,11 +465,11 @@ public class Main extends Application {
 			Game champGame = b.getGames().get(b.getSize());
 			buildChampBtn(championBtn, champGame, root, maxX, team1, team2);
 		}
-		
+		*/
 		
 		// SIDE BAR RIGHT SIDE // TODO: ADD MORE OPTIONS
 		Button optionsBtn = new Button("Additional Options");
-		optionsBtn.setOnAction(NeeshanHatesPizza -> optionScreen(primaryStage));
+		optionsBtn.setOnAction(e -> optionScreen(primaryStage));
 		optionsBtn.setMinSize(120, 40);
 		optionsBtn.setLayoutX(frameWidth-140);
 		optionsBtn.setLayoutY(25);
@@ -549,7 +602,7 @@ public class Main extends Application {
 		loopMusic(bennieAndtheJets);
 		musicPlayer.setVolume(.25); //init sound to 25%
 		
-		int tempTeams = 32;
+		int tempTeams = 8;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
