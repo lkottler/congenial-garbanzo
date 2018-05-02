@@ -59,12 +59,17 @@ public class Main extends Application {
 		menuScreen(primaryStage);
 	}
 	
+	
+	//This function will correctly load an image given that it is in the img folder.
 	private Image loadImage(String path){
 		Image img = null;
 		try {
 			img = new Image(new File(pathToRes + "img/" + path).toURI().toURL().toString());
 		} catch (MalformedURLException e) {
 			System.out.println("Failed to load image: " + pathToRes + path);
+			e.printStackTrace();
+		} catch (NullPointerException e){
+			System.out.println("Found null for Image: " + path);
 			e.printStackTrace();
 		}
 		return img;
