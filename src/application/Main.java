@@ -446,7 +446,7 @@ public class Main extends Application {
 		File musicFolder = new File(pathToRes + "snd/music");
 		int bennieAndtheJets = 0;
 
-		if (musicFolder != null){
+		if (musicFolder.exists()){
 			File[] musicFiles = musicFolder.listFiles();
 		
 			for (File f : musicFiles){
