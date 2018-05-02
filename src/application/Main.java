@@ -49,6 +49,8 @@ public class Main extends Application {
 	static ArrayList<Media> music = new ArrayList<Media>();
 	static Text cSongDisplay;
 	
+	final static String pathToRes = "src/res/";
+	
 	@Override
 	public void start(Stage primaryStage) {
 		primaryStage.setResizable(false);
@@ -60,9 +62,9 @@ public class Main extends Application {
 	private Image loadImage(String path){
 		Image img = null;
 		try {
-			img = new Image(new File("res/img/" + path).toURI().toURL().toString());
+			img = new Image(new File(pathToRes + "img/" + path).toURI().toURL().toString());
 		} catch (MalformedURLException e) {
-			System.out.println("Failed to load image: res/img/" + path);
+			System.out.println("Failed to load image: " + pathToRes + path);
 			e.printStackTrace();
 		}
 		return img;
@@ -114,7 +116,7 @@ public class Main extends Application {
 		
 		Button bracketBtn = new Button("View Bracket");
 		bracketBtn.setOnAction(e -> {
-			File duckFile = new File("res/snd/duck.mp3");
+			File duckFile = new File(pathToRes + "snd/duck.mp3");
 			Media duckSound = new Media(duckFile.toURI().toString());
 			MediaPlayer duckPlayer = new MediaPlayer(duckSound);
 			duckPlayer.play();
@@ -442,7 +444,7 @@ public class Main extends Application {
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.play();
 		
-		File musicFolder = new File("res/snd/music");
+		File musicFolder = new File(pathToRes + "snd/music");
 		File[] musicFiles = musicFolder.listFiles();
 		
 		int bennieAndtheJets = 0;
