@@ -88,6 +88,7 @@ public class Main extends Application {
 		Scene optionScene = new Scene (optionPane, frameWidth, frameHeight);
 		optionScene.getStylesheets().add("application/css/mainMenu.css");
 		Button myButton = new Button("My Button");
+		myButton.setOnAction(e -> menuScreen(primaryStage));
 		myButton.setLayoutX(frameWidth/2);
 		myButton.setLayoutY(frameHeight/2);
 		//load image menu.png
