@@ -10,7 +10,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -445,13 +444,16 @@ public class Main extends Application {
 		timeline.play();
 		
 		File musicFolder = new File(pathToRes + "snd/music");
-		File[] musicFiles = musicFolder.listFiles();
-		
 		int bennieAndtheJets = 0;
-		for (File f : musicFiles){
-			if (f.toString().contains("Elton John"))
-				bennieAndtheJets = music.size();
-			music.add(new Media(f.toURI().toString()));
+
+		if (musicFolder != null){
+			File[] musicFiles = musicFolder.listFiles();
+		
+			for (File f : musicFiles){
+				if (f.toString().contains("Elton John"))
+					bennieAndtheJets = music.size();
+				music.add(new Media(f.toURI().toString()));
+			}
 		}
 		loopMusic(bennieAndtheJets);
 		musicPlayer.setVolume(.25); //init sound to 25%
