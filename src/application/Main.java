@@ -68,18 +68,43 @@ public class Main extends Application {
 		}
 		return img;
 	}
+	
+	/*
+	 * OptionsScreen that redirects to bracket
+	 * TODO
+	 * load file
+	 * reset bracket function: reset all of the arrays (Games and Teams)
+	 * go back to bracket 
+	 * add any additional fun things: choose theme, change font, change genre
+	 * 
+	 */
 	private void optionScreen(Stage primaryStage)
 	{
 		primaryStage.setTitle("Option Menu");
+		Pane optionPane = new Pane();
+		
+		buildDefaults(optionPane);
+		
+		Scene optionScene = new Scene (optionPane, frameWidth, frameHeight);
+		optionScene.getStylesheets().add("application/css/mainMenu.css");
+		Button myButton = new Button("My Button");
+		myButton.setLayoutX(frameWidth/2);
+		myButton.setLayoutY(frameHeight/2);
 		//load image menu.png
+		optionPane.getChildren().add(myButton);
+		
+		primaryStage.setScene(optionScene);
+		primaryStage.show();
 		
 	}
-	
+	/*
+	 * Main menu scene loaded
+	 */
 	private void menuScreen(Stage primaryStage){
 		
-		primaryStage.setTitle("Welcome to my Ȟ̸̳͚̝̖̂ͪ̈́́ȩ͙͚͇͎͓̣ͤá̞̖̬͔̟̈́̆͋̌̀͜͟v̸̙͎̇ͬͪͬͤē̛̖͙̻̩̩̻͌̚͠n͍̬͈̝̙̱̱̰̔ͩͣͣ̂ͧ̓̃"); //TODO
+		primaryStage.setTitle("Welcome to my Ȟ̸̳͚̝̖̂ͪ̈́́ȩ͙͚͇͎͓̣ͤá̞̖̬͔̟̈́̆͋̌̀͜͟v̸̙͎̇ͬͪͬͤē̛̖͙̻̩̩̻͌̚͠n͍̬͈̝̙̱̱̰̔ͩͣͣ̂ͧ̓̃"); //maybe we need to change
 		Pane menuPane = new Pane();
-		buildDefaults(menuPane);
+		buildDefaults(menuPane);										//sound bar
 		
 		Scene menuScene = new Scene(menuPane, frameWidth, frameHeight);
 		menuScene.getStylesheets().add("application/css/mainMenu.css");
@@ -120,14 +145,14 @@ public class Main extends Application {
 		imvW.getStyleClass().add("image");
 		imvW.setOnMouseClicked(e -> viewBracket(primaryStage));
 		
-		Button bracketBtn = new Button("View Bracket");
-		bracketBtn.setOnAction(e -> {
-			File duckFile = new File(pathToRes + "snd/duck.mp3");
-			Media duckSound = new Media(duckFile.toURI().toString());
-			MediaPlayer duckPlayer = new MediaPlayer(duckSound);
-			duckPlayer.play();
-			viewBracket(primaryStage);
-		});
+//		Button bracketBtn = new Button("View Bracket");
+//		bracketBtn.setOnAction(e -> {
+//			File duckFile = new File(pathToRes + "snd/duck.mp3");
+//			Media duckSound = new Media(duckFile.toURI().toString());
+//			MediaPlayer duckPlayer = new MediaPlayer(duckSound);
+//			duckPlayer.play();
+//			viewBracket(primaryStage);
+//		});
 		
 		
 		primaryStage.setScene(menuScene);
@@ -136,7 +161,9 @@ public class Main extends Application {
 
 		
 	}
-	
+	/*
+	 * Styling of the scaling of all the properties
+	 */
 	//Default styling (feel free to mess with these)
 	enum st {
 		MAX_X (frameWidth - 180),
@@ -151,6 +178,10 @@ public class Main extends Application {
 		public int scale(double scalar) {return (int) (value * scalar);}
 		public int val() { return value;}
 	}
+	/*
+	 * Gets next row in of the games
+	 * It gets where the next game will move on from
+	 */
 	
 	private static int getParentIndex(int total, int curr){
 		int offset = 0;
@@ -164,6 +195,11 @@ public class Main extends Application {
 		return offset + (curr - temp)/2;
 	}
 	
+	/*
+	 * Changes text of button
+	 * when a child game is finished and updated parent that new game is ready
+	 * 
+	 */
 	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth){
 		Team t1 = game.getTeam1(), t2 = game.getTeam2();
 		int[] scores = game.getScores();
@@ -177,6 +213,11 @@ public class Main extends Application {
 								? "____________\n" + t2.getTeamName() + ": " + scores[1]
 								: t1.getTeamName() + ": " + scores[0] + "\n____________");
 	}
+	
+	/*
+	 * Kevin
+	 * 
+	 */
 	private void buildChampBtn(Button btn, Game champGame, Pane root, int paneWidth, Team team1, Team team2) {
 		int[] scores = champGame.getScores();
 		btn.setText(team1.getTeamName() + ": " + scores[0] + "\n" + team2.getTeamName() + ": " + scores[1]);
@@ -200,6 +241,12 @@ public class Main extends Application {
 			};
 		});
 	}
+	
+	/*
+	 * build a bracket button
+	 * and it adds funtionality of a button
+	 * prompts you to enter score when it it's ready
+	 */
 	
 	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth){
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
@@ -278,6 +325,9 @@ public class Main extends Application {
 			root.getChildren().addAll(scoringOps);
 		});
 	}
+	/*
+	 * Bracket Scene with the buttons and additional option button
+	 */
 	
 	public void viewBracket(Stage primaryStage) {
 		Pane root = new Pane();
