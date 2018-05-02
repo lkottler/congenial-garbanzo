@@ -170,6 +170,29 @@ public class Main extends Application {
 								? "____________\n" + t2.getTeamName() + ": " + scores[1]
 								: t1.getTeamName() + ": " + scores[0] + "\n____________");
 	}
+	private void buildChampBtn(Button btn, Game champGame, Pane root, int paneWidth, Team team1, Team team2) {
+		int[] scores = champGame.getScores();
+		btn.setText(team1.getTeamName() + ": " + scores[0] + "\n" + team2.getTeamName() + ": " + scores[1]);
+		btn.setOnAction(e ->  {
+			root.getChildren().remove(root.lookup("#removeVBox"));
+			VBox scoringOps = new VBox();
+			scoringOps.setAlignment(Pos.TOP_CENTER);
+			scoringOps.setId("removeVBox");
+			scoringOps.setLayoutX(frameWidth - 140);
+			scoringOps.setLayoutY(75);
+			scoringOps.setSpacing(10);
+			
+			Label[] teamLabels = new Label[]{
+					new Label(team1.getTeamName() + "'s Score:"),
+					new Label(team2.getTeamName() + "'s Score:")};
+			TextField[] textFields = new TextField[]{
+					new TextField(), //team1 textfield
+					new TextField()};//team2 textfield
+			HBox[] scoreBoxes = new HBox[]{
+					new HBox(), new HBox()
+			};
+		});
+	}
 	
 	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth){
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
@@ -311,8 +334,10 @@ public class Main extends Application {
 				gameCount++;
 			}
 		}
-		/*
+	
 		//put CHAMPIONSHIP TODO
+
+			
 		Button championBtn = new Button();
 		championBtn.setText("ARE YOU READY");
 		championBtn.setStyle("-fx-font-size: " + fontSize*1.5 + "px");
@@ -320,7 +345,14 @@ public class Main extends Application {
 		championBtn.setLayoutX((maxX-btnWidth) / 2);
 		championBtn.setLayoutY(maxY / 2 - btnHeight*1.8);
 		root.getChildren().add(championBtn);
-		*/
+
+		if (b.getGames().get(b.getSize() -2).isCompleted() 
+				&& b.getGames().get(b.getSize() -1).isCompleted()) {
+			Team team1 = b.getGames().get(b.getSize() -2).getWinner();
+			Team team2 = b.getGames().get(b.getSize() -1).getWinner();
+			Game champGame = b.getGames().get(b.getSize());
+			buildChampBtn(championBtn, champGame, root, maxX, team1, team2);
+		}
 		
 		
 		// SIDE BAR RIGHT SIDE // TODO: ADD MORE OPTIONS
