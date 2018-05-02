@@ -75,7 +75,7 @@ public class Main extends Application {
 		Pane menuPane = new Pane();
 		buildDefaults(menuPane);
 		Scene menuScene = new Scene(menuPane, frameWidth, frameHeight);
-		menuScene.getStylesheets().add("application/application.css");
+		menuScene.getStylesheets().add("application/css/mainMenu.css");
 		
 		int[] cData = new int[]{frameWidth / 2, frameHeight /2, 300};
 		Circle whiteP = new Circle();
@@ -253,7 +253,7 @@ public class Main extends Application {
 		Pane root = new Pane();
 		buildDefaults(root);
 		Scene scene1 = new Scene(root, frameWidth, frameHeight);	
-		scene1.getStylesheets().add("application/application.css");
+		scene1.getStylesheets().add("application/css/bracket.css");
 		
 		//Defaults (based around a 16 team bracket)
 		int
