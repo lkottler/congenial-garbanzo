@@ -68,12 +68,19 @@ public class Main extends Application {
 		}
 		return img;
 	}
+	private void optionScreen(Stage primaryStage)
+	{
+		primaryStage.setTitle("Option Menu");
+		//load image menu.png
+		
+	}
 	
 	private void menuScreen(Stage primaryStage){
 		
 		primaryStage.setTitle("Welcome to my Ȟ̸̳͚̝̖̂ͪ̈́́ȩ͙͚͇͎͓̣ͤá̞̖̬͔̟̈́̆͋̌̀͜͟v̸̙͎̇ͬͪͬͤē̛̖͙̻̩̩̻͌̚͠n͍̬͈̝̙̱̱̰̔ͩͣͣ̂ͧ̓̃"); //TODO
 		Pane menuPane = new Pane();
 		buildDefaults(menuPane);
+		
 		Scene menuScene = new Scene(menuPane, frameWidth, frameHeight);
 		menuScene.getStylesheets().add("application/css/mainMenu.css");
 		
@@ -325,7 +332,7 @@ public class Main extends Application {
 		
 		// SIDE BAR RIGHT SIDE // TODO: ADD MORE OPTIONS
 		Button optionsBtn = new Button("Additional Options");
-		optionsBtn.setOnAction(NeeshanHatesPizza -> menuScreen(primaryStage));
+		optionsBtn.setOnAction(NeeshanHatesPizza -> optionScreen(primaryStage));
 		optionsBtn.setMinSize(120, 40);
 		optionsBtn.setLayoutX(frameWidth-140);
 		optionsBtn.setLayoutY(25);

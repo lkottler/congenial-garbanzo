@@ -1,0 +1,53 @@
+.root {
+	 -fx-background-color: turquoise /* TODO pick a nice color :) */
+}
+
+.circle {
+	-fx-cursor: crosshair
+}
+
+.button {
+	-fx-text-fill: black;
+	-fx-font-weight: bold;
+	-fx-font-family: "Robosto";
+	-fx-background-color: linear-gradient(white, yellow);
+}
+
+.button:hover {
+	-fx-background-color: linear-gradient(yellow, white);
+}
+
+.modifiedGame {
+	-fx-background-color: linear-gradient(darkmagenta, lemonchiffon)
+}
+.modifiedGame:hover {
+	-fx-background-color: linear-gradient(lemonchiffon, darkmagenta)
+}
+
+
+.completedGame {
+	-fx-background-color: linear-gradient(lightblue, blue);
+}
+
+.completedGame:hover {
+	-fx-background-color: linear-gradient(blue, lightblue);
+}
+
+.soundButton {
+    -fx-text-fill: white;
+    -fx-font-family: "Verdana";
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#d0451b, #bc3315);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+.soundButton:hover {
+    -fx-background-color: linear-gradient(#bc3315, #d0451b);
+}
+
+.image {
+	-fx-opacity: 70%;
+}
+
+.image:hover {
+	-fx-opacity: 100%;
+}
