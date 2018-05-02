@@ -157,7 +157,6 @@ public class Main extends Application {
 	}
 	
 	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth){
-		String buttonText = "";
 		Team t1 = game.getTeam1(), t2 = game.getTeam2();
 		int[] scores = game.getScores();
 		
@@ -179,9 +178,7 @@ public class Main extends Application {
 
 		btn.setText(t1Name + ": " + scores[0] + "\n"+ t2Name + ": " + scores[1]);
 		btn.setOnAction(e -> {
-			
 			root.getChildren().remove(root.lookup("#removeVBox"));
-			
 			VBox scoringOps = new VBox();
 			scoringOps.setAlignment(Pos.TOP_CENTER);
 			scoringOps.setId("removeVBox");
@@ -200,7 +197,7 @@ public class Main extends Application {
 			};
 			for (int p = 0; p < 2; p++){
 				if (scores[p] != 0) textFields[p].setText("" + scores[p]);
-				textFields[p].setPrefSize(30,10);
+				textFields[p].setPrefSize(40,10);
 				scoreBoxes[p].setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
 				scoreBoxes[p].setSpacing(44 - (teams[p].getTeamName().length()*6));
 				scoreBoxes[p].getChildren().addAll(teamLabels[p],textFields[p]);
@@ -231,7 +228,6 @@ public class Main extends Application {
 			
 			Button completeGame = new Button("Complete Game");
 			completeGame.setOnAction(p -> {
-				
 				b.completeGame(workingGame);
 
 				ArrayList<Game> games = b.getGames();
@@ -243,14 +239,11 @@ public class Main extends Application {
 					updateGameBtn(thisGameBtn, g, root, paneWidth);
 					thisGame = getParentIndex(b.getSize() / 2, thisGame);
 				}
-				
 				workingGame.completeGame();
 				btn.getStyleClass().add("completedGame");
-
 			});
 			
 			scoringOps.getChildren().addAll(setScores, completeGame);
-			
 			root.getChildren().addAll(scoringOps);
 		});
 	}
@@ -260,13 +253,9 @@ public class Main extends Application {
 		buildDefaults(root);
 		Scene scene1 = new Scene(root, frameWidth, frameHeight);	
 		scene1.getStylesheets().add("application/application.css");
-
-		
-		ArrayList<Game> games = b.getGames();
 		
 		//Defaults (based around a 16 team bracket)
-		HBox[] remove = null;
-		int toRemove = -1,
+		int
 		numGames = b.getSize() / 2,
 		x, y, xDif, yDif,
 		gameCount = 0,
