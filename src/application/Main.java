@@ -325,7 +325,7 @@ public class Main extends Application {
 		
 		// SIDE BAR RIGHT SIDE // TODO: ADD MORE OPTIONS
 		Button optionsBtn = new Button("Additional Options");
-		optionsBtn.setOnAction(KevinHasSomeHotPants -> menuScreen(primaryStage));
+		optionsBtn.setOnAction(NeeshanHatesPizza -> menuScreen(primaryStage));
 		optionsBtn.setMinSize(120, 40);
 		optionsBtn.setLayoutX(frameWidth-140);
 		optionsBtn.setLayoutY(25);
