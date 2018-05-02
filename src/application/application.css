@@ -1,5 +1,5 @@
 .root {
-	 -fx-background-color: #C6012F  /* TODO pick a nice color :) */
+	 -fx-background-color: darkcyan /* TODO pick a nice color :) */
 }
 
 .circle {
@@ -18,10 +18,10 @@
 }
 
 .modifiedGame {
-	-fx-background-color: linear-gradient(coral, orange)
+	-fx-background-color: linear-gradient(darkmagenta, lemonchiffon)
 }
 .modifiedGame:hover {
-	-fx-background-color: linear-gradient(orange, coral)
+	-fx-background-color: linear-gradient(lemonchiffon, darkmagenta)
 }
 
 
