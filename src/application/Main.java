@@ -220,7 +220,7 @@ public class Main extends Application {
 		Circle whiteP = new Circle();
 		whiteP.setCenterX(cData[0]);
 		whiteP.setCenterY(cData[1]);
-		whiteP.setFill(javafx.scene.paint.Color.KHAKI);
+		whiteP.setFill(javafx.scene.paint.Color.WHITE);
 		whiteP.setRadius(cData[2]);
 		
 		// pay no attention to this code.
