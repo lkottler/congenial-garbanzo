@@ -161,7 +161,7 @@ public class Main extends Application {
 	//Default styling (feel free to mess with these)
 	enum st {
 		MAX_X (frameWidth - 180),
-		MAX_Y (frameHeight - 140),
+		MAX_Y (frameHeight - 60),
 		X_PADDING (20),
 		Y_PADDING (20),
 		BTN_WIDTH (100),
@@ -248,8 +248,6 @@ public class Main extends Application {
 				championship.getChildren().add(teamVBoxes[i]);
 			}
 			
-		
-			
 			Image vsImg = loadImage("vs.png");
 			ImageView vsImv = new ImageView(vsImg);
 			vsImv.setFitHeight(100);
@@ -300,7 +298,7 @@ public class Main extends Application {
 					
 					Team[] losers = new Team[2];
 					int[] oldScores = new int[2];
-					for (int i = 0; i < 2; i ++){
+					for (int i = 0; i < 2; i ++){ //TODO something strange is going on here...
 						if (prevGames[i].getWinner() == prevGames[i].getTeam1()){
 							losers[i] = prevGames[i].getTeam2();
 							oldScores[i] = prevGames[i].getScores()[1];
@@ -337,9 +335,7 @@ public class Main extends Application {
 				crownImv.setLayoutX((championshipGame.getWinner() == teams[0])
 						? frameWidth / 6 + 42
 						: frameWidth / 6 + 42 + frameWidth / 2.5);
-				
-				if (championshipGame.getWinner() == teams[0])
-				
+								
 				if (!championship.getChildren().contains(crownImv)){ //NOTE DO NOT COMBINE THESE
 					championship.getChildren().addAll(crownImv, podiumImv);
 					championship.getChildren().addAll(podiumWinners[0], podiumWinners[1], podiumWinners[2]);
@@ -461,6 +457,7 @@ public class Main extends Application {
 				Game g = workingGame;//games.get(thisGame);
 				
 				boolean championReady = (
+										games.size() > 2  &&
 										games.get(games.size()-2).isCompleted() &&
 										games.get(games.size()-3).isCompleted() &&
 										root.lookup("#champBtn") == null
@@ -536,52 +533,40 @@ public class Main extends Application {
 				  ySpace = (int) (maxY/(numGames/2.0)),
 				  xSpace = (int) (maxX/(2.0*iterations)) - btnWidth;
 		
-		if (b.getSize() < 3 || (games.get(games.size() - 3).isCompleted() && games.get(games.size() - 2).isCompleted())){
+		if (numGames < 3 || (games.get(games.size() - 3).isCompleted() && games.get(games.size() - 2).isCompleted())){
 			buildChampBtn(primaryStage, root, scalar);
 		}
-		
-		for (int i = 0; i < iterations; i++){
-			int subNumGames = numGames / (1 << i);
-			xDif = i*(btnWidth) + i*xSpace;
-			yDif = ySpace*(1 << i)/2;
-			
-			for (int j = 0; j < subNumGames; j++){
-				Button btn = new Button();
-				btn.setPrefSize(btnWidth, btnHeight);
-				btn.setStyle("-fx-font-size: " + fontSize + "px");
-				btn.setId("btn-" + gameCount);
-				Game workingGame = games.get(gameCount);
-				if (workingGame.getTeam1() == null || workingGame.getTeam2() == null){ //NO FUNCTION BUTTON
-					updateGameBtn(btn, workingGame, root, maxX, primaryStage, scalar);
-				} else{
-					buildBtn(btn, workingGame, root, maxX, primaryStage, scalar);
+		if (b.getSize() > 2){
+			for (int i = 0; i < iterations; i++){
+				int subNumGames = numGames / (1 << i);
+				xDif = i*(btnWidth) + i*xSpace;
+				yDif = ySpace*(1 << i)/2;
+				
+				for (int j = 0; j < subNumGames; j++){
+					Button btn = new Button();
+					btn.setPrefSize(btnWidth, btnHeight);
+					btn.setStyle("-fx-font-size: " + fontSize + "px");
+					btn.setId("btn-" + gameCount);
+					Game workingGame = games.get(gameCount);
+					if (workingGame.getTeam1() == null || workingGame.getTeam2() == null){ //NO FUNCTION BUTTON
+						updateGameBtn(btn, workingGame, root, maxX, primaryStage, scalar);
+					} else{
+						buildBtn(btn, workingGame, root, maxX, primaryStage, scalar);
+					}
+					//TODO fix X spacing
+					x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif - btnWidth;
+					y = (j < subNumGames/2)
+							? j*ySpace*(1 << i) + yDif
+	 						: (j - subNumGames/2)*ySpace*(1 << i) + yDif;
+					x += xPad; //padding
+					y += yPad; //padding
+					btn.setLayoutX(x);
+					btn.setLayoutY(y);
+					root.getChildren().add(btn);
+					gameCount++;
 				}
-				//TODO fix X spacing
-				x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif - btnWidth;
-				y = (j < subNumGames/2)
-						? j*ySpace*(1 << i) + yDif
- 						: (j - subNumGames/2)*ySpace*(1 << i) + yDif;
-				x += xPad; //padding
-				y += yPad; //padding
-				btn.setLayoutX(x);
-				btn.setLayoutY(y);
-				root.getChildren().add(btn);
-				gameCount++;
 			}
 		}
-
-			
-
-		/*
-		if (b.getGames().get(b.getSize() -2).isCompleted() 
-				&& b.getGames().get(b.getSize() -1).isCompleted()) {
-			Team team1 = b.getGames().get(b.getSize() -2).getWinner();
-			Team team2 = b.getGames().get(b.getSize() -1).getWinner();
-			Game champGame = b.getGames().get(b.getSize());
-			buildChampBtn(championBtn, champGame, root, maxX, team1, team2);
-		}
-		*/
-		
 		// SIDE BAR RIGHT SIDE // TODO: ADD MORE OPTIONS
 		Button optionsBtn = new Button("Additional Options");
 		optionsBtn.setOnAction(e -> optionScreen(primaryStage));
@@ -757,7 +742,7 @@ public class Main extends Application {
 			}
 		}
 				
-		int tempTeams = 8;
+		int tempTeams = 16;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
@@ -771,7 +756,7 @@ public class Main extends Application {
 		b.initGames();
 		
 		// TESTING CODE: THIS WILL COMPLETE EVERY GAME
-		for (Game g: b.getGames()){ g.completeGame();}
+		//for (Game g: b.getGames()){ g.completeGame();}
 	}
 	
 	public static void main(String[] args) {
