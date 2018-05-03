@@ -10,15 +10,25 @@ public class Bracket {
 	private ArrayList<Team> teams;
 	private ArrayList<Game> games;
 	
+	/**
+	 * default constructor
+	 */
 	Bracket(){
 		teams = new ArrayList<Team>();
 	}
 	
+	/**
+	 * constructor that takes list of teams as input
+	 * @param teams
+	 */
 	Bracket(ArrayList<Team> teams){
 		this.teams = teams;
-		this.initGames();
+		this.initGames(); //this method creates the games ArrayList according to the amount of teams -- see method body below
 	}
 	
+	/**
+	 * method that sets amount of games in the tournament to the number of teams - 1
+	 */
 	private void initGames(){
 		games = new ArrayList<Game>();
 		int numOfTeams = teams.size();
@@ -51,6 +61,12 @@ public class Bracket {
 		}
 	}
 	
+	/**
+	 * Calculates parent index of a game
+	 * @param total total number of games
+	 * @param curr index of this game
+	 * @return
+	 */
 	private static int getParentIndex(int total, int curr){
 		int offset = 0;
 		int temp = 0;
@@ -62,9 +78,23 @@ public class Bracket {
 		}
 		return offset + (curr - temp)/2;
 	}
-	
+	/**
+	 * makes call to overloaded completeGame method with int and Game parameters
+	 * @param gameIndex
+	 */
 	public void completeGame(int gameIndex){ this.completeGame(gameIndex, games.get(gameIndex));};
+	
+	/**
+	 * makes call to overloaded completeGame method with int and Game parameters
+	 * @param thisGame
+	 */
 	public void completeGame(Game thisGame){ this.completeGame(games.indexOf(thisGame), thisGame); };
+	
+	/**
+	 * Sets winner of game and sets game as completed
+	 * @param gameIndex
+	 * @param thisGame
+	 */
 	private void completeGame(int gameIndex, Game thisGame){
 		thisGame.completeGame();
 		if (gameIndex != games.size() - 1){

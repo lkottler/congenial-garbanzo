@@ -7,15 +7,28 @@ public class Game {
 	private boolean isCompleted;
 	private Team winner;
 	
-
+	/**
+	 * default constructor
+	 */
 	Game(){
 		team1 = null; team2 = null;
 		winner = null;
 		score = new int[]{0, 0};
 	}
+	/**
+	 * constructor with 2 teams as input, default scores set to 0
+	 * @param team1
+	 * @param team2
+	 */
 	Game(Team team1, Team team2){
 		this(team1, team2, 0, 0);
 	}
+	/**
+	 * constructor with 2 teams and array of scores for team 1 and team 2 respectively as input
+	 * @param team1
+	 * @param team2
+	 * @param score
+	 */
 	Game(Team team1, Team team2, int[] score){
 		this.team1 = team1;
 		this.team2 = team2;
@@ -23,6 +36,13 @@ public class Game {
 		this.isCompleted = false;
 		this.winner = null;
 	}
+	/**
+	 * constructor with 2 teams and 2 scores as input
+	 * @param team1
+	 * @param team2
+	 * @param score1
+	 * @param score2
+	 */
 	Game(Team team1, Team team2, int score1, int score2){
 		this(team1, team2, new int[]{score1, score2});
 	}

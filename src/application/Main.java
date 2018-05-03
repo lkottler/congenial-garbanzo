@@ -223,23 +223,24 @@ public class Main extends Application {
 		whiteP.setFill(javafx.scene.paint.Color.WHITE);
 		whiteP.setRadius(cData[2]);
 		
-		// pay no attention to this code.
-		Image secret = loadImage("menu.png");
-		ImageView imvS = new ImageView(secret);
-		imvS.setOpacity(0.015);
-		imvS.setScaleX((cData[2] * 2) / (secret.getWidth()));
-		imvS.setScaleY((cData[2] * 2) / (secret.getHeight()));
-		HBox secretRegion = new HBox(imvS);
-		secretRegion.setLayoutX(cData[0] - cData[2]+ 57);
-		secretRegion.setLayoutY(cData[1] - cData[2]+ 57);
+//		Image secret = loadImage("menu.png");
+//		ImageView imvS = new ImageView(secret);
+//		imvS.setOpacity(0.015);
+//		imvS.setScaleX((cData[2] * 2) / (secret.getWidth()));
+//		imvS.setScaleY((cData[2] * 2) / (secret.getHeight()));
+//		HBox secretRegion = new HBox(imvS);
+//		secretRegion.setLayoutX(cData[0] - cData[2]+ 57);
+//		secretRegion.setLayoutY(cData[1] - cData[2]+ 57);
+//		
+//		FadeTransition fadeIn = new FadeTransition(Duration.minutes(10), imvS);
+//		fadeIn.setFromValue(0);
+//		fadeIn.setToValue(1);
+//		fadeIn.play();
+//		
+//		menuPane.getChildren().addAll(whiteP, secretRegion);
+//		//End of secret code
 		
-		FadeTransition fadeIn = new FadeTransition(Duration.minutes(10), imvS);
-		fadeIn.setFromValue(0);
-		fadeIn.setToValue(1);
-		fadeIn.play();
-		
-		menuPane.getChildren().addAll(whiteP, secretRegion);
-		//End of secret code
+		menuPane.getChildren().addAll(whiteP);
 		
 		//The Wisconsin logo
 		Image wisconsin = loadImage("logos/wi.png");
@@ -402,6 +403,7 @@ public class Main extends Application {
 					
 					Team[] losers = new Team[2];
 					int[] oldScores = new int[2];
+					
 					for (int i = 0; i < 2; i ++){ //TODO something strange is going on here...
 						if (prevGames[i].getWinner() == prevGames[i].getTeam1()){
 							losers[i] = prevGames[i].getTeam2();
