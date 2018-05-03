@@ -1,5 +1,5 @@
 .root {
-	 -fx-background-color: turquoise /* TODO pick a nice color :) */
+	 -fx-background-color: LIGHTSEAGREEN /* TODO pick a nice color :) */
 }
 
 .circle {
@@ -10,27 +10,27 @@
 	-fx-text-fill: black;
 	-fx-font-weight: bold;
 	-fx-font-family: "Robosto";
-	-fx-background-color: linear-gradient(khaki, yellow);
+	-fx-background-color: linear-gradient(khaki, PALEGOLDENROD);
 }
 
 .button:hover {
-	-fx-background-color: linear-gradient(yellow, khaki);
+	-fx-background-color: linear-gradient(PALEGOLDENROD, khaki);
 }
 
 .modifiedGame {
-	-fx-background-color: linear-gradient(orchid, darkorchid)
+	-fx-background-color: linear-gradient(green, yellow)
 }
 .modifiedGame:hover {
-	-fx-background-color: linear-gradient(darkorchid, orchid)
+	-fx-background-color: linear-gradient(yellow, green)
 }
 
 
 .completedGame {
-	-fx-background-color: linear-gradient(cornflowerblue, blue);
+	-fx-background-color: linear-gradient(DARKCYAN, blue);
 }
 
 .completedGame:hover {
-	-fx-background-color: linear-gradient(blue, cornflowerblue);
+	-fx-background-color: linear-gradient(blue, DARKCYAN);
 }
 
 .soundButton {

@@ -1,5 +1,5 @@
 .root {
-	 -fx-background-color: turquoise /* TODO pick a nice color :) */
+	 -fx-background-color: LIGHTSEAGREEN /* TODO pick a nice color :) */
 }
 
 .button {
@@ -7,11 +7,11 @@
 	-fx-font-weight: bold;
 	-fx-font-size: 20px;
 	-fx-font-family: "Verdana";
-	-fx-background-color: linear-gradient(khaki, yellow);
+	-fx-background-color: linear-gradient(khaki, PALEGOLDENROD);
 }
 
 .button:hover {
-	-fx-background-color: linear-gradient(yellow, khaki);
+	-fx-background-color: linear-gradient(PALEGOLDENROD, khaki);
 }
 
 .textField {
