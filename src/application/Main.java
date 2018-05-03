@@ -114,13 +114,14 @@ public class Main extends Application {
 		
 		HBox hFile = new HBox();
 		Label fileLab = new Label("Read in teams from File:"); 
+		//what does this code do
 		TextField fileField = new TextField(); fileField.getStyleClass().add("textField"); //TODO figure out css name for textfield
 		Button confirmFile = new Button("Confirm");
 		hFile.setAlignment(Pos.CENTER_LEFT);
 		hFile.setSpacing(10);
 		fileField.setPrefSize(200, 30);
 		confirmFile.setOnAction(e -> {
-			initTeamsByFile(fileField.getText());
+			initTeamsByFile(fileField.getText()); 
 			if (!hFile.getChildren().contains(confirmed))
 				hFile.getChildren().add(confirmed);
 		});
@@ -151,13 +152,16 @@ public class Main extends Application {
 		HBox primaryBtns = new HBox();
 		primaryBtns.setSpacing(25);
 		
-		Button homeBtn = new Button("Title Screen");
+		Button homeBtn = new Button("Title Screen");								//goes back to W
 		homeBtn.setOnAction(e -> menuScreen(primaryStage));
 		
-		Button bracketBtn = new Button("View Bracket");
+		Button bracketBtn = new Button("View Bracket");								//goes back to bracket
 		bracketBtn.setOnAction(e -> viewBracket(primaryStage));
 		
-		primaryBtns.getChildren().addAll(homeBtn, bracketBtn);
+		Button clearBtn = new Button("Clear");										//resets option page
+		clearBtn.setOnAction(e -> optionScreen(primaryStage));
+		
+		primaryBtns.getChildren().addAll(homeBtn, bracketBtn, clearBtn);
 
 		
 		vSize.setAlignment(Pos.TOP_LEFT);
@@ -171,7 +175,10 @@ public class Main extends Application {
 		me.setLayoutY(FRAME_HEIGHT - 40);
 		optionPane.getChildren().addAll(vSize, me);
 		
-		
+		Label neesh = new Label("Neeshan has light up shoes");
+		neesh.getStyleClass().remove("label");
+		neesh.setLayoutY(FRAME_HEIGHT - 60);
+		optionPane.getChildren().addAll(neesh);
 		
 		primaryStage.setScene(optionScene);
 		primaryStage.show();
