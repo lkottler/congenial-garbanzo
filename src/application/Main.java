@@ -189,6 +189,10 @@ public class Main extends Application {
 		ImageView imvB = new ImageView(bee);
 		imvB.setScaleX(1.1);
 		imvB.setScaleY(1.1);
+		// I took out the bee image
+		Button back_button = new Button("Return to Bracket");
+		primaryBtns.getChildren().add(back_button);
+		back_button.setOnMouseClicked(e -> viewBracket(primaryStage));
 		HBox bBox = new HBox(imvB);
 		bBox.setLayoutX((FRAME_WIDTH - bee.getWidth()) / 2);
 		bBox.setLayoutY((FRAME_HEIGHT- bee.getHeight())/ 2 + 25);
