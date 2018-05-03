@@ -149,22 +149,11 @@ public class Main extends Application {
 		menuPane.getChildren().add(wiscoHBox);
 		
 		imvW.getStyleClass().add("image");
-		imvW.setOnMouseClicked(e -> viewBracket(primaryStage));
-		
-//		Button bracketBtn = new Button("View Bracket");
-//		bracketBtn.setOnAction(e -> {
-//			File duckFile = new File(pathToRes + "snd/duck.mp3");
-//			Media duckSound = new Media(duckFile.toURI().toString());
-//			MediaPlayer duckPlayer = new MediaPlayer(duckSound);
-//			duckPlayer.play();
-//			viewBracket(primaryStage);
-//		});
-		
+		imvW.setOnMouseClicked(e -> viewBracket(primaryStage));		
 		
 		primaryStage.setScene(menuScene);
 		primaryStage.sizeToScene();
 		primaryStage.show();	
-
 		
 	}
 	/*
@@ -372,41 +361,6 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 	
-	/*
-	 * Kevin
-	 *  **Consider using the champScene method I created for a more exciting "Final match" screen.
-	 *  Cheers, Logan
-	 *  also cool if you find another way to be more suitable.
-	 */
-	/*
-	private void buildChampBtn(Button btn, Game champGame, Pane root, int paneWidth, Team team1, Team team2) {
-		int[] scores = champGame.getScores();
-		btn.setText(team1.getTeamName() + ": " + scores[0] + "\n" + team2.getTeamName() + ": " + scores[1]);
-		btn.setOnAction(e ->  {
-			root.getChildren().remove(root.lookup("#removeVBox"));
-			VBox scoringOps = new VBox();
-			scoringOps.setAlignment(Pos.TOP_CENTER);
-			scoringOps.setId("removeVBox");
-			scoringOps.setLayoutX(frameWidth - 140);
-			scoringOps.setLayoutY(75);
-			scoringOps.setSpacing(10);
-			
-			Label[] teamLabels = new Label[]{
-					new Label(team1.getTeamName() + "'s Score:"),
-					new Label(team2.getTeamName() + "'s Score:")};
-			TextField[] textFields = new TextField[]{
-					new TextField(), //team1 textfield
-					new TextField()};//team2 textfield
-			HBox[] scoreBoxes = new HBox[]{
-					new HBox(), new HBox()
-			};
-		});
-	}
-	*/
-	/*
-	 * Gets next row in of the games
-	 * It gets where the next game will move on from
-	 */
 	private static int getParentIndex(int total, int curr){
 		int offset = 0;
 		int temp = 0;
