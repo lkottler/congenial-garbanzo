@@ -202,16 +202,18 @@ public class Main extends Application {
 		returnBtn.setOnAction(e -> viewBracket(primaryStage));
 		championship.getChildren().add(returnBtn);
 		
-		if (games.size() == 1){ //hard code in one winner (no possible game to display)
+		if (games.size() == 0){ //hard code in one winner (no possible game to display)
+			
+			
 			
 		} else { //else statement may or may not be necessary.
 			
-			
+			Button completeBtn = new Button("Lock in Scores");
+			completeBtn.setLayoutX(frameWidth-90);
+			completeBtn.setLayoutY(frameHeight-100);
+			completeBtn.setOnAction(e -> viewBracket(primaryStage));
 			
 		
-			
-			
-			
 		}
 		primaryStage.setScene(champScene);
 		primaryStage.show();
