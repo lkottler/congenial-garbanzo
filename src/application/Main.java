@@ -240,6 +240,8 @@ public class Main extends Application {
 //		menuPane.getChildren().addAll(whiteP, secretRegion);
 //		//End of secret code
 		
+		menuPane.getChildren().addAll(whiteP);
+		
 		//The Wisconsin logo
 		Image wisconsin = loadImage("logos/wi.png");
 		ImageView imvW = new ImageView(wisconsin);
