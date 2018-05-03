@@ -24,6 +24,8 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -446,12 +448,12 @@ public class Main extends Application {
 	 * when a child game is finished and updated parent that new game is ready
 	 * 
 	 */
-	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth, Stage primaryStage, double scalar){
+	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth, Stage primaryStage, double scalar, Scene scene){
 		Team t1 = game.getTeam1(), t2 = game.getTeam2();
 		int[] scores = game.getScores();
 		
 		if (t1 != null && t2 != null){
-			buildBtn(btn, game, root, paneWidth, primaryStage, scalar); //add functionality
+			buildBtn(btn, game, root, paneWidth, primaryStage, scalar, scene); //add functionality
 		} 
 		else btn.setText((t1 == null && t2 == null)  //simply change text
 						? ""
@@ -465,7 +467,7 @@ public class Main extends Application {
 	 * prompts you to enter score when it it's ready
 	 */
 	
-	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth, Stage primaryStage, double scalar){
+	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth, Stage primaryStage, double scalar, Scene scene){
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
 		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
 		int[] scores = workingGame.getScores();
@@ -490,15 +492,7 @@ public class Main extends Application {
 			HBox[] scoreBoxes = new HBox[]{
 					new HBox(), new HBox()
 			};
-			for (int p = 0; p < 2; p++){
-				if (scores[p] != 0) textFields[p].setText("" + scores[p]);
-				textFields[p].setPrefSize(40,10);
-				scoreBoxes[p].setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
-				scoreBoxes[p].setSpacing(44 - (teams[p].getTeamName().length()*6));
-				scoreBoxes[p].getChildren().addAll(teamLabels[p],textFields[p]);
-				scoringOps.getChildren().add(scoreBoxes[p]);
-			}			
-			Button setScores = new Button("Set Scores");
+			Button setScores = new Button("(S)et Scores");
 			setScores.setOnAction(p -> {
 				boolean[] changed = new boolean[]{false, false};		
 				if (textFields[0].getText().matches("-?\\d+")){ //-? --> negative sign (one or none), \\d+ --> one or more digits
@@ -521,7 +515,7 @@ public class Main extends Application {
 				
 			});
 			
-			Button completeGame = new Button("Complete Game");
+			Button completeGame = new Button("(C)omplete Game");
 			completeGame.setOnAction(p -> {
 				b.completeGame(workingGame);
 
@@ -543,12 +537,41 @@ public class Main extends Application {
 				while (thisGame < games.size() - 1){ //recursively fix parents
 					g = games.get(thisGame);
 					Button thisGameBtn = (Button) root.lookup("#btn-" + thisGame);
-					updateGameBtn(thisGameBtn, g, root, paneWidth, primaryStage, scalar);
+					updateGameBtn(thisGameBtn, g, root, paneWidth, primaryStage, scalar, scene);
 					thisGame = getParentIndex(b.getSize() / 2, thisGame);
 				} 
 				
 				workingGame.completeGame();
 				btn.getStyleClass().add("completedGame");
+				
+			});
+			
+			for (int p = 0; p < 2; p++){
+				if (scores[p] != 0) textFields[p].setText("" + scores[p]);
+				textFields[p].setPrefSize(40,10);
+				textFields[p].setOnKeyPressed(key -> {
+					if (key.getCode() == KeyCode.C) {
+						completeGame.fire();
+						textFields[0].clear();
+						textFields[1].clear();
+					} else if (key.getCode() == KeyCode.S){
+						setScores.fire();
+						textFields[0].clear();
+						textFields[1].clear();
+					} 
+				});
+				scoreBoxes[p].setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+				scoreBoxes[p].setSpacing(44 - (teams[p].getTeamName().length()*6));
+				scoreBoxes[p].getChildren().addAll(teamLabels[p],textFields[p]);
+				scoringOps.getChildren().add(scoreBoxes[p]);
+			}	
+			
+			btn.setOnKeyPressed(key -> {
+				if (key.getCode() == KeyCode.C) {
+					completeGame.fire();
+				} else if (key.getCode() == KeyCode.S){
+					setScores.fire();
+				}
 			});
 			
 			scoringOps.getChildren().addAll(setScores, completeGame);
@@ -622,9 +645,9 @@ public class Main extends Application {
 					btn.setId("btn-" + gameCount);
 					Game workingGame = games.get(gameCount);
 					if (workingGame.getTeam1() == null || workingGame.getTeam2() == null){ //NO FUNCTION BUTTON
-						updateGameBtn(btn, workingGame, root, maxX, primaryStage, scalar);
+						updateGameBtn(btn, workingGame, root, maxX, primaryStage, scalar, scene1);
 					} else{
-						buildBtn(btn, workingGame, root, maxX, primaryStage, scalar);
+						buildBtn(btn, workingGame, root, maxX, primaryStage, scalar, scene1);
 					}
 					//TODO fix X spacing
 					x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif - btnWidth;
