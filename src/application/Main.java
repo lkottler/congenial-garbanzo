@@ -706,14 +706,6 @@ public class Main extends Application {
 		return logos.get(random);
 	}
 	
-	private Image getLogo(String name){
-		for (Image i : logos){
-			if (i.impl_getUrl().contains(name))
-				return i;
-		}
-		return null;
-	}
-	
 	public static void initVars(){
 		
 		cSongDisplay = new Text("Init");
