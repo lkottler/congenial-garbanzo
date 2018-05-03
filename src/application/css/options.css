@@ -1,0 +1,36 @@
+.root {
+	 -fx-background-color: turquoise /* TODO pick a nice color :) */
+}
+
+.button {
+	-fx-text-fill: black;
+	-fx-font-weight: bold;
+	-fx-font-size: 20px;
+	-fx-font-family: "Verdana";
+	-fx-background-color: linear-gradient(khaki, yellow);
+}
+
+.button:hover {
+	-fx-background-color: linear-gradient(yellow, khaki);
+}
+
+.textField {
+	-fx-font-family: "Verdana";
+	-fx-font-size: 20px;
+}
+
+.label {
+	-fx-font-family: "Verdana";
+	-fx-font-size: 20px;
+}
+.soundButton {
+    -fx-text-fill: white;
+    -fx-font-family: "Verdana";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#d0451b, #bc3315);
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+}
+.soundButton:hover {
+    -fx-background-color: linear-gradient(#bc3315, #d0451b);
+}

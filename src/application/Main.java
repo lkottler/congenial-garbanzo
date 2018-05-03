@@ -1,6 +1,10 @@
 package application;
 	
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -76,6 +80,17 @@ public class Main extends Application {
 		return img;
 	}
 	
+	private void changeSizeOfBracket(int rounds){
+		
+		int totalTeams = (1 << rounds);
+		System.out.println(totalTeams);
+		ArrayList<Team> newTeams = new ArrayList<Team>();
+		for (int i = 0; i < totalTeams; i++){
+			newTeams.add(new Team(i, "Team: " + i));
+		}
+		b = new Bracket(newTeams);
+	}
+	
 	/* TODO please help me somebody.
 	 * OptionsScreen that redirects to bracket
 	 * load file
@@ -91,13 +106,68 @@ public class Main extends Application {
 		buildDefaults(optionPane);
 		
 		Scene optionScene = new Scene (optionPane, frameWidth, frameHeight);
-		optionScene.getStylesheets().add("application/css/mainMenu.css");
-		Button myButton = new Button("My Button");
-		myButton.setOnAction(e -> menuScreen(primaryStage));
-		myButton.setLayoutX(frameWidth/2);
-		myButton.setLayoutY(frameHeight/2);
-		//load image menu.png
-		optionPane.getChildren().add(myButton);
+		optionScene.getStylesheets().add("application/css/options.css");
+		
+		Label confirmed = new Label("Operation complete."); confirmed.getStyleClass().add("label");
+		
+		VBox vSize = new VBox();
+		
+		HBox hFile = new HBox();
+		Label fileLab = new Label("Read in teams from File:"); fileLab.getStyleClass().add("label");
+		TextField fileField = new TextField(); fileField.getStyleClass().add("textField");
+		Button confirmFile = new Button("Confirm");
+		hFile.setAlignment(Pos.CENTER_LEFT);
+		hFile.setSpacing(10);
+		fileField.setPrefSize(200, 30);
+		confirmFile.setOnAction(e -> {
+			initTeamsByFile(fileField.getText());
+			if (!hFile.getChildren().contains(confirmed))
+				hFile.getChildren().add(confirmed);
+		});
+		
+		
+		
+		hFile.getChildren().addAll(fileLab, fileField, confirmFile);
+		
+		HBox hSize = new HBox();
+		Label sizeLab = new Label("Change number of rounds (0-10):"); sizeLab.getStyleClass().add("label");
+		TextField sizeField = new TextField(); sizeField.getStyleClass().add("textField");
+		Button confirmSize = new Button("Confirm");
+		sizeField.setPrefSize(80, 30);
+		confirmSize.setOnAction(e -> {
+			if (sizeField.getText().matches("-?\\d+")){
+				int rounds = Integer.parseInt(sizeField.getText());
+				if (rounds >= 0 && rounds < 11)
+					changeSizeOfBracket(rounds);
+				if (!hSize.getChildren().contains(confirmed))
+					hSize.getChildren().add(confirmed);
+			}
+		});
+		
+		hSize.getChildren().addAll(sizeLab, sizeField, confirmSize);
+		hSize.setSpacing(10);
+		hSize.setAlignment(Pos.CENTER_LEFT);
+		
+		HBox primaryBtns = new HBox();
+		primaryBtns.setSpacing(25);
+		
+		Button homeBtn = new Button("Title Screen");
+		homeBtn.setOnAction(e -> menuScreen(primaryStage));
+		
+		Button bracketBtn = new Button("View Bracket");
+		bracketBtn.setOnAction(e -> viewBracket(primaryStage));
+		
+		primaryBtns.getChildren().addAll(homeBtn, bracketBtn);
+
+		
+		vSize.setAlignment(Pos.TOP_LEFT);
+		vSize.getChildren().addAll(hSize, hFile, primaryBtns);
+		vSize.setLayoutX(20);
+		vSize.setLayoutY(20);
+		vSize.setSpacing(25);
+		optionPane.getChildren().add(vSize);
+		
+		
 		
 		primaryStage.setScene(optionScene);
 		primaryStage.show();
@@ -691,7 +761,28 @@ public class Main extends Application {
 		return logos.get(random);
 	}
 	
-	public static void initVars(){
+	private static void initTeamsByFile(String filePath){
+		int counter = 1;
+		String line = null;
+		ArrayList<Team> newTeams = new ArrayList<Team>();
+		try {
+			FileReader fr = new FileReader(filePath);
+			
+			BufferedReader br = new BufferedReader(fr);
+			
+			while((line = br.readLine()) != null){
+				newTeams.add(new Team(counter, line));
+			}
+			br.close();
+		} catch(FileNotFoundException e){
+			System.out.println("Uh oh! Couldn't find the file at:\n" + filePath);
+		} catch(IOException e){
+			System.out.println("Error reading file:\n" + filePath);
+		}
+		b = new Bracket(newTeams);		
+	}
+	
+	public static void initVars(String fileOfTeams){
 		
 		cSongDisplay = new Text("Init");
 		cSongDisplay.setFont(Font.font("Verdana", 20));
@@ -741,26 +832,28 @@ public class Main extends Application {
 				}
 			}
 		}
-				
-		int tempTeams = 16;
-		String[] teamNames = new String[tempTeams];
-		for (int i = 0; i < tempTeams; i++){
-			teamNames[i] = "Team " + (i+1);
-		}
-		ArrayList<Team> teamList = new ArrayList<Team>();
-		for (int i = 0; i < teamNames.length; i++){
-			teamList.add(new Team(i+1, teamNames[i]));
-		}
 		
-		b = new Bracket(teamList);
-		b.initGames();
+		//initTeamsByFile("src/teamsTest.txt");
+		if (b == null){
+			int tempTeams = 16;
+			String[] teamNames = new String[tempTeams];
+			for (int i = 0; i < tempTeams; i++){
+				teamNames[i] = "Team " + (i+1);
+			}
+			
+			ArrayList<Team> teamList = new ArrayList<Team>();
+			for (int i = 0; i < teamNames.length; i++){
+				teamList.add(new Team(i+1, teamNames[i]));
+			}
+			b = new Bracket(teamList);
+		}
 		
 		// TESTING CODE: THIS WILL COMPLETE EVERY GAME
 		//for (Game g: b.getGames()){ g.completeGame();}
 	}
 	
 	public static void main(String[] args) {
-		initVars();
-		launch(args);
+		initVars((args.length > 0) ? args[0] : "");
+		launch();
 	}
 }

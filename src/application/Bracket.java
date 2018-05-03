@@ -16,9 +16,10 @@ public class Bracket {
 	
 	Bracket(ArrayList<Team> teams){
 		this.teams = teams;
+		this.initGames();
 	}
 	
-	public void initGames(){
+	private void initGames(){
 		games = new ArrayList<Game>();
 		int numOfTeams = teams.size();
 		if (numOfTeams < 2) return;
@@ -34,7 +35,20 @@ public class Bracket {
 			}
 			games.add(new Game()); //championship game
 		}
-		else System.out.println("Failed to create games. Invalid number of teams: " +numOfTeams);
+		else {
+			System.out.println("Failed to create games. Invalid number of teams: " +numOfTeams + "\nRetrying...");
+			ArrayList<String> removedTeams = new ArrayList<String>();
+			while ((teams.size() & (teams.size() - 1)) != 0){
+				removedTeams.add(teams.get(teams.size() - 1).getTeamName());
+				teams.remove(teams.size() - 1);
+			}
+			System.out.print("Had to remove " + removedTeams.size() + " team(s): ");
+			for (String s: removedTeams){
+				System.out.print('"' + s + "\" - ");
+			}
+			System.out.println();
+			initGames();
+		}
 	}
 	
 	private static int getParentIndex(int total, int curr){
