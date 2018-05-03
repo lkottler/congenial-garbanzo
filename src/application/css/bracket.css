@@ -10,27 +10,27 @@
 	-fx-text-fill: black;
 	-fx-font-weight: bold;
 	-fx-font-family: "Robosto";
-	-fx-background-color: linear-gradient(white, yellow);
+	-fx-background-color: linear-gradient(khaki, yellow);
 }
 
 .button:hover {
-	-fx-background-color: linear-gradient(yellow, white);
+	-fx-background-color: linear-gradient(yellow, khaki);
 }
 
 .modifiedGame {
-	-fx-background-color: linear-gradient(darkmagenta, lemonchiffon)
+	-fx-background-color: linear-gradient(orchid, darkorchid)
 }
 .modifiedGame:hover {
-	-fx-background-color: linear-gradient(lemonchiffon, darkmagenta)
+	-fx-background-color: linear-gradient(darkorchid, orchid)
 }
 
 
 .completedGame {
-	-fx-background-color: linear-gradient(lightblue, blue);
+	-fx-background-color: linear-gradient(cornflowerblue, blue);
 }
 
 .completedGame:hover {
-	-fx-background-color: linear-gradient(blue, lightblue);
+	-fx-background-color: linear-gradient(blue, cornflowerblue);
 }
 
 .soundButton {

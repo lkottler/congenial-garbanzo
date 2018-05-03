@@ -11,8 +11,6 @@ public class Game {
 	Game(){
 		team1 = null; team2 = null;
 		winner = null;
-		@SuppressWarnings("unused")
-		boolean isCompleted = false;
 		score = new int[]{0, 0};
 	}
 	Game(Team team1, Team team2){

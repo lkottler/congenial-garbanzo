@@ -1,5 +1,16 @@
 .root {
-	 -fx-background-color: floralwhite  /* TODO pick a nice color :) */
+	 -fx-background-color: royalblue  /* TODO pick a nice color :) */
+}
+
+.button {
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+	-fx-font-family: "Robosto";
+	-fx-background-color: linear-gradient(red, maroon);
+}
+
+.button:hover {
+	-fx-background-color: linear-gradient(maroon, red);
 }
 
 .soundButton {

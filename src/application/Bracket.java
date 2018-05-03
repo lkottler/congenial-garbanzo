@@ -63,19 +63,6 @@ public class Bracket {
 		
 	}
 	
-	
-	public boolean newRound(){ //Returns whether it was successful creating a new round of games.
-		ArrayList<Game> tempGames = new ArrayList<Game>();
-		for (int i = 0; i < games.size(); i+=2){
-			Game game1 = games.get(i);
-			Game game2 = games.get(i+1);
-			if (!game1.isCompleted() || !game2.isCompleted())
-				return false;
-			tempGames.add(new Game(game1.getWinner(), game2.getWinner()));
-		}
-		games = tempGames;	
-		return true;
-	}
 	//Setters
 	public void setTeams(ArrayList<Team> teams){this.teams = teams;}
 	

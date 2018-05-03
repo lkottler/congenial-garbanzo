@@ -185,15 +185,14 @@ public class Main extends Application {
 		public int val() { return value;}
 	}
 
-	/* TODO
+	/*
 	 * this function will display the scores of the final game, allow locking in of scores, and display the top 3
-	 * 
 	 */
 	private void champScene(Stage primaryStage){
 		Pane championship = new Pane();
 		buildDefaults(championship); //music bar
 		Scene champScene = new Scene(championship);
-		champScene.getStylesheets().add("application/css/championship.css"); //TODO create styling for this scene.
+		champScene.getStylesheets().add("application/css/championship.css");
 		ArrayList<Game> games = b.getGames();
 		
 		if (games.size() == 0){ //hard code in one winner (no possible game to display)
@@ -233,7 +232,6 @@ public class Main extends Application {
 			while (teamImages[0] == teamImages[1]){
 				teamImages[0] = getRandomLogo();
 				teamImages[1] = getRandomLogo();
-				System.out.println("finished");
 			}
 			ImageView[] teamImv = new ImageView[]{new ImageView(teamImages[0]), new ImageView(teamImages[1])};
 
@@ -262,6 +260,8 @@ public class Main extends Application {
 				championship.getChildren().add(teamVBoxes[i]);
 			}
 			
+		
+			
 			Image vsImg = loadImage("vs.png");
 			ImageView vsImv = new ImageView(vsImg);
 			vsImv.setFitHeight(100);
@@ -271,10 +271,33 @@ public class Main extends Application {
 			
 			Image crown = loadImage("crown.png");
 			ImageView crownImv = new ImageView(crown);
-			//crownImv.setFitHeight(10);
-			//crownImv.setFitWidth(10);
-			crownImv.setLayoutX(100);
-			crownImv.setLayoutY(100);
+			crownImv.setFitHeight(120); //slight smush
+			crownImv.setFitWidth(132);
+			crownImv.setLayoutY(0);
+			
+			Image podium = loadImage("podium.png");
+			ImageView podiumImv = new ImageView(podium);
+			//podiumImv.setFitHeight(248);
+			//podiumImv.setFitWidth(850);
+			podiumImv.setLayoutY(frameHeight / 2 + 130);
+			podiumImv.setLayoutX(20);
+			
+			//TODO 
+			// Implement cut-scene here to allow time for loading imgs.
+			
+			Label[] podiumWinners = new Label[]{
+					new Label(), new Label(), new Label()
+			};
+			
+			int[][] coordinates = new int[][]
+			   {{110,frameHeight / 2 + 180},
+				{380,frameHeight / 2 + 100},
+				{650,frameHeight / 2 + 220}};
+			for (int i = 0; i < podiumWinners.length; i++){
+				podiumWinners[i].setLayoutX(coordinates[i][0]);
+				podiumWinners[i].setLayoutY(coordinates[i][1]);
+				podiumWinners[i].setFont(Font.font("Verdana", 30));
+			}
 
 			Button completeBtn = new Button("Lock in Scores");
 			completeBtn.setPrefSize(120, 60);
@@ -282,7 +305,29 @@ public class Main extends Application {
 			completeBtn.setLayoutY(240);
 			completeBtn.setOnAction(e -> {
 				
-				if (textFields[0].getText().matches("-?\\d+")){ //-? --> negative sign (one or none), \\d+ --> one or more digits
+				String thirdPlace = "Nobody!";
+				if (games.size() > 1){
+					Game[] prevGames = new Game[]{games.get(games.size() - 2), games.get(games.size() - 1)};
+					if (prevGames[0] == null) prevGames[0] = prevGames[1];
+					
+					Team[] losers = new Team[2];
+					int[] oldScores = new int[2];
+					for (int i = 0; i < 2; i ++){
+						if (prevGames[i].getWinner() == prevGames[i].getTeam1()){
+							losers[i] = prevGames[i].getTeam2();
+							oldScores[i] = prevGames[i].getScores()[1];
+						} else{
+							losers[i] = prevGames[i].getTeam1();
+							oldScores[i] = prevGames[i].getScores()[0];
+						}
+					} if (!(losers[0] == null || losers[1] == null)){
+					thirdPlace = (oldScores[0] > oldScores[1])
+							? losers[0].getTeamName()
+							: losers[1].getTeamName();
+					}
+				}
+				
+				  if (textFields[0].getText().matches("-?\\d+")){ //-? --> negative sign (one or none), \\d+ --> one or more digits
 					scores[0] = Integer.parseInt(textFields[0].getText());
 					championshipGame.setTeam1Score(scores[0]);
 					finalScores[0].setText("" + scores[0]);
@@ -292,8 +337,25 @@ public class Main extends Application {
 					finalScores[1].setText("" + scores[1]);
 				}
 				b.completeGame(championshipGame);
+				Team winner = championshipGame.getWinner();
+				podiumWinners[1].setText(winner.getTeamName());
+				podiumWinners[0].setText((winner == championshipGame.getTeam1()) 
+								? championshipGame.getTeam2().getTeamName()
+								: championshipGame.getTeam1().getTeamName());
 				
-				championship.getChildren().add(crownImv);
+				podiumWinners[2].setText(thirdPlace);
+				
+				
+				crownImv.setLayoutX((championshipGame.getWinner() == teams[0])
+						? frameWidth / 6 + 42
+						: frameWidth / 6 + 42 + frameWidth / 2.5);
+				
+				if (championshipGame.getWinner() == teams[0])
+				
+				if (!championship.getChildren().contains(crownImv)){ //NOTE DO NOT COMBINE THESE
+					championship.getChildren().addAll(crownImv, podiumImv);
+					championship.getChildren().addAll(podiumWinners[0], podiumWinners[1], podiumWinners[2]);
+				}
 			});
 			
 			championship.getChildren().addAll(completeBtn, vsImv);
@@ -506,7 +568,7 @@ public class Main extends Application {
 		xAvailSpace = 0.9 * (st.MAX_X.val() - st.X_PADDING.val()) / (iterations*2.0) / st.BTN_WIDTH.val(),
 		yAvailSpace = (st.MAX_Y.val() - st.Y_PADDING.val()) / (numGames/2.0) / st.BTN_HEIGHT.val();
 		
-		final double scalar = (numGames < 2) ? 2
+		final double scalar = (numGames < 3) ? 2
 					:(xAvailSpace < yAvailSpace) // see which is restricting
 						? xAvailSpace
 						: yAvailSpace;
@@ -749,7 +811,7 @@ public class Main extends Application {
 			}
 		}
 				
-		int tempTeams = 2;
+		int tempTeams = 8;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
@@ -762,7 +824,8 @@ public class Main extends Application {
 		b = new Bracket(teamList);
 		b.initGames();
 		
-		for (Game g: b.getGames()){ g.completeGame();}
+		// TESTING CODE: THIS WILL COMPLETE EVERY GAME
+		//for (Game g: b.getGames()){ g.completeGame();}
 		
 	}
 	
