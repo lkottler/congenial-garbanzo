@@ -110,26 +110,9 @@ public class Main extends Application {
 		
 		Label confirmed = new Label("Operation complete.");
 		
-		VBox vSize = new VBox();
+		VBox vSize = new VBox();											//lists in vertical
 		
-		HBox hFile = new HBox();
-		Label fileLab = new Label("Read in teams from File:"); 
-		//what does this code do
-		TextField fileField = new TextField(); fileField.getStyleClass().add("textField"); //TODO figure out css name for textfield
-		Button confirmFile = new Button("Confirm");
-		hFile.setAlignment(Pos.CENTER_LEFT);
-		hFile.setSpacing(10);
-		fileField.setPrefSize(200, 30);
-		confirmFile.setOnAction(e -> {
-			initTeamsByFile(fileField.getText()); 
-			if (!hFile.getChildren().contains(confirmed))
-				hFile.getChildren().add(confirmed);
-		});
-		
-		
-		
-		hFile.getChildren().addAll(fileLab, fileField, confirmFile);
-		
+		//1st row of horizontal buttons that changes rounds of games
 		HBox hSize = new HBox();
 		Label sizeLab = new Label("Change number of rounds (0-10):");
 		TextField sizeField = new TextField(); sizeField.getStyleClass().add("textField");
@@ -145,9 +128,28 @@ public class Main extends Application {
 			}
 		});
 		
-		hSize.getChildren().addAll(sizeLab, sizeField, confirmSize);
+		hSize.getChildren().addAll(sizeLab, sizeField, confirmSize);		
 		hSize.setSpacing(10);
 		hSize.setAlignment(Pos.CENTER_LEFT);
+		
+		
+		//2nd row of horizontal buttons that reads in from a file
+		HBox hFile = new HBox();
+		Label fileLab = new Label("Read in teams from File:"); 
+		//what does this code do
+		//TODO figure out css name for textfield
+		TextField fileField = new TextField(); fileField.getStyleClass().add("textField"); 
+		Button confirmFile = new Button("Confirm");
+		hFile.setAlignment(Pos.CENTER_LEFT);
+		hFile.setSpacing(10);
+		fileField.setPrefSize(200, 30);
+		confirmFile.setOnAction(e -> {
+			initTeamsByFile(fileField.getText()); 
+			if (!hFile.getChildren().contains(confirmed))
+				hFile.getChildren().add(confirmed);
+		});
+		
+		hFile.getChildren().addAll(fileLab, fileField, confirmFile);	
 		
 		HBox primaryBtns = new HBox();
 		primaryBtns.setSpacing(25);
