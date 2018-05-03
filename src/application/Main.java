@@ -76,9 +76,8 @@ public class Main extends Application {
 		return img;
 	}
 	
-	/*
+	/* TODO please help me somebody.
 	 * OptionsScreen that redirects to bracket
-	 * TODO
 	 * load file
 	 * reset bracket function: reset all of the arrays (Games and Teams)
 	 * go back to bracket 
@@ -687,8 +686,8 @@ public class Main extends Application {
 		
 	}
 	
+	//standard C library random constants
 	static final long
-	SEED = 0,
 	MUL_A = 1103515245,
 	MOD_M = 2147483647,
 	INC_C = 12345;
@@ -699,6 +698,7 @@ public class Main extends Application {
 	}
 	
 	private Image getRandomLogo(){
+		curr_rand = System.currentTimeMillis(); //more random every time
 		int random = 0;
 		for (int i = 0; i < 100; i++){
 			random = getRandomNumber(0, logos.size());
@@ -771,8 +771,7 @@ public class Main extends Application {
 		b.initGames();
 		
 		// TESTING CODE: THIS WILL COMPLETE EVERY GAME
-		//for (Game g: b.getGames()){ g.completeGame();}
-		
+		for (Game g: b.getGames()){ g.completeGame();}
 	}
 	
 	public static void main(String[] args) {
