@@ -46,21 +46,21 @@ public class Main extends Application {
 	static Bracket b;
 	
 	final static int
-	frameHeight = 800,
-	frameWidth = 1000;
+	FRAME_HEIGHT = 800,
+	FRAME_WIDTH = 1000;
 	
 	static MediaPlayer musicPlayer;
 	static ArrayList<Media> music = new ArrayList<Media>();
 	static ArrayList<Image> logos = new ArrayList<Image>();
 	static Text cSongDisplay;
 	
-	final static String pathToRes = "src/res/";
+	final static String PATH_TO_RES = "src/res/";
 	
 	@Override
 	public void start(Stage primaryStage) {
 		primaryStage.setResizable(false);
-		primaryStage.setMinWidth(frameWidth);
-		primaryStage.setMinHeight(frameHeight);
+		primaryStage.setMinWidth(FRAME_WIDTH);
+		primaryStage.setMinHeight(FRAME_HEIGHT);
 		menuScreen(primaryStage);
 	}
 	
@@ -69,9 +69,9 @@ public class Main extends Application {
 	private Image loadImage(String path){
 		Image img = null;
 		try {
-			img = new Image(new File(pathToRes + "img/" + path).toURI().toURL().toString());
+			img = new Image(new File(PATH_TO_RES + "img/" + path).toURI().toURL().toString());
 		} catch (MalformedURLException e) {
-			System.out.println("Failed to load image: " + pathToRes + path);
+			System.out.println("Failed to load image: " + PATH_TO_RES + path);
 			e.printStackTrace();
 		} catch (NullPointerException e){
 			System.out.println("Found null for Image: " + path);
@@ -81,7 +81,6 @@ public class Main extends Application {
 	}
 	
 	private void changeSizeOfBracket(int rounds){
-		
 		int totalTeams = (1 << rounds);
 		System.out.println(totalTeams);
 		ArrayList<Team> newTeams = new ArrayList<Team>();
@@ -91,7 +90,7 @@ public class Main extends Application {
 		b = new Bracket(newTeams);
 	}
 	
-	/* TODO please help me somebody.
+	/* 
 	 * OptionsScreen that redirects to bracket
 	 * load file
 	 * reset bracket function: reset all of the arrays (Games and Teams)
@@ -105,16 +104,16 @@ public class Main extends Application {
 		
 		buildDefaults(optionPane);
 		
-		Scene optionScene = new Scene (optionPane, frameWidth, frameHeight);
+		Scene optionScene = new Scene (optionPane, FRAME_WIDTH, FRAME_HEIGHT);
 		optionScene.getStylesheets().add("application/css/options.css");
 		
-		Label confirmed = new Label("Operation complete."); confirmed.getStyleClass().add("label");
+		Label confirmed = new Label("Operation complete.");
 		
 		VBox vSize = new VBox();
 		
 		HBox hFile = new HBox();
-		Label fileLab = new Label("Read in teams from File:"); fileLab.getStyleClass().add("label");
-		TextField fileField = new TextField(); fileField.getStyleClass().add("textField");
+		Label fileLab = new Label("Read in teams from File:"); 
+		TextField fileField = new TextField(); fileField.getStyleClass().add("textField"); //TODO figure out css name for textfield
 		Button confirmFile = new Button("Confirm");
 		hFile.setAlignment(Pos.CENTER_LEFT);
 		hFile.setSpacing(10);
@@ -130,7 +129,7 @@ public class Main extends Application {
 		hFile.getChildren().addAll(fileLab, fileField, confirmFile);
 		
 		HBox hSize = new HBox();
-		Label sizeLab = new Label("Change number of rounds (0-10):"); sizeLab.getStyleClass().add("label");
+		Label sizeLab = new Label("Change number of rounds (0-10):");
 		TextField sizeField = new TextField(); sizeField.getStyleClass().add("textField");
 		Button confirmSize = new Button("Confirm");
 		sizeField.setPrefSize(80, 30);
@@ -165,7 +164,11 @@ public class Main extends Application {
 		vSize.setLayoutX(20);
 		vSize.setLayoutY(20);
 		vSize.setSpacing(25);
-		optionPane.getChildren().add(vSize);
+		
+		Label me = new Label("Logan is really cool");
+		me.getStyleClass().remove("label");
+		me.setLayoutY(FRAME_HEIGHT - 40);
+		optionPane.getChildren().addAll(vSize, me);
 		
 		
 		
@@ -181,10 +184,10 @@ public class Main extends Application {
 		Pane menuPane = new Pane();
 		buildDefaults(menuPane);										//sound bar
 		
-		Scene menuScene = new Scene(menuPane, frameWidth, frameHeight);
+		Scene menuScene = new Scene(menuPane, FRAME_WIDTH, FRAME_HEIGHT);
 		menuScene.getStylesheets().add("application/css/mainMenu.css");
 		
-		int[] cData = new int[]{frameWidth / 2, frameHeight /2, 300};
+		int[] cData = new int[]{FRAME_WIDTH / 2, FRAME_HEIGHT /2, 300};
 		Circle whiteP = new Circle();
 		whiteP.setCenterX(cData[0]);
 		whiteP.setCenterY(cData[1]);
@@ -213,8 +216,8 @@ public class Main extends Application {
 		imvW.setScaleX(1.1);
 		imvW.setScaleY(1.1);
 		HBox wiscoHBox = new HBox(imvW);
-		wiscoHBox.setLayoutX((frameWidth - wisconsin.getWidth()) / 2);
-		wiscoHBox.setLayoutY((frameHeight- wisconsin.getHeight())/ 2 + 25);
+		wiscoHBox.setLayoutX((FRAME_WIDTH - wisconsin.getWidth()) / 2);
+		wiscoHBox.setLayoutY((FRAME_HEIGHT- wisconsin.getHeight())/ 2 + 25);
 		menuPane.getChildren().add(wiscoHBox);
 		
 		imvW.getStyleClass().add("image");
@@ -230,8 +233,8 @@ public class Main extends Application {
 	 */
 	//Default styling (feel free to mess with these)
 	enum st {
-		MAX_X (frameWidth - 180),
-		MAX_Y (frameHeight - 60),
+		MAX_X (FRAME_WIDTH - 180),
+		MAX_Y (FRAME_HEIGHT - 60),
 		X_PADDING (20),
 		Y_PADDING (20),
 		BTN_WIDTH (100),
@@ -257,8 +260,8 @@ public class Main extends Application {
 			String winner = (b.getSize() > 0) ? "" + b.getTeams().get(0).getTeamName() : "Nobody :'(";
 			Label noFun = new Label("You're no fun...\nThe winner is: " + winner);
 			noFun.setFont(Font.font("Verdana", 32));
-			noFun.setLayoutY(frameHeight / 2 - 100);
-			noFun.setLayoutX(frameWidth  / 2 - 80);
+			noFun.setLayoutY(FRAME_HEIGHT / 2 - 100);
+			noFun.setLayoutX(FRAME_WIDTH  / 2 - 80);
 			noFun.setAlignment(Pos.CENTER_LEFT);
 			
 			championship.getChildren().add(noFun);
@@ -299,7 +302,7 @@ public class Main extends Application {
 				teamImv[i].setFitWidth(220);
 				
 				teamVBoxes[i].setAlignment(Pos.TOP_CENTER);
-				teamVBoxes[i].setLayoutX(i*(frameWidth / 2.5) + frameWidth / 6);
+				teamVBoxes[i].setLayoutX(i*(FRAME_WIDTH / 2.5) + FRAME_WIDTH / 6);
 				teamVBoxes[i].setLayoutY(100);
 				
 				if (scores[i] != 0) textFields[i].setText("" + scores[i]);
@@ -322,7 +325,7 @@ public class Main extends Application {
 			ImageView vsImv = new ImageView(vsImg);
 			vsImv.setFitHeight(100);
 			vsImv.setFitWidth(120);
-			vsImv.setLayoutX(frameWidth/2 - 80);
+			vsImv.setLayoutX(FRAME_WIDTH/2 - 80);
 			vsImv.setLayoutY(100);
 			
 			Image crown = loadImage("crown.png");
@@ -335,7 +338,7 @@ public class Main extends Application {
 			ImageView podiumImv = new ImageView(podium);
 			//podiumImv.setFitHeight(248);
 			//podiumImv.setFitWidth(850);
-			podiumImv.setLayoutY(frameHeight / 2 + 130);
+			podiumImv.setLayoutY(FRAME_HEIGHT / 2 + 130);
 			podiumImv.setLayoutX(20);
 			
 			//TODO 
@@ -346,9 +349,9 @@ public class Main extends Application {
 			};
 			
 			int[][] coordinates = new int[][]
-			   {{110,frameHeight / 2 + 180},
-				{380,frameHeight / 2 + 100},
-				{650,frameHeight / 2 + 220}};
+			   {{110,FRAME_HEIGHT / 2 + 180},
+				{380,FRAME_HEIGHT / 2 + 100},
+				{650,FRAME_HEIGHT / 2 + 220}};
 			for (int i = 0; i < podiumWinners.length; i++){
 				podiumWinners[i].setLayoutX(coordinates[i][0]);
 				podiumWinners[i].setLayoutY(coordinates[i][1]);
@@ -357,7 +360,7 @@ public class Main extends Application {
 
 			Button completeBtn = new Button("Lock in Scores");
 			completeBtn.setPrefSize(120, 60);
-			completeBtn.setLayoutX(frameWidth/2 - 80);
+			completeBtn.setLayoutX(FRAME_WIDTH/2 - 80);
 			completeBtn.setLayoutY(240);
 			completeBtn.setOnAction(e -> {
 				
@@ -403,8 +406,8 @@ public class Main extends Application {
 				
 				
 				crownImv.setLayoutX((championshipGame.getWinner() == teams[0])
-						? frameWidth / 6 + 42
-						: frameWidth / 6 + 42 + frameWidth / 2.5);
+						? FRAME_WIDTH / 6 + 42
+						: FRAME_WIDTH / 6 + 42 + FRAME_WIDTH / 2.5);
 								
 				if (!championship.getChildren().contains(crownImv)){ //NOTE DO NOT COMBINE THESE
 					championship.getChildren().addAll(crownImv, podiumImv);
@@ -417,8 +420,8 @@ public class Main extends Application {
 		
 		// Default button to go back (feel free to change)
 		Button returnBtn = new Button("Back");
-		returnBtn.setLayoutX(frameWidth-90);
-		returnBtn.setLayoutY(frameHeight-100);
+		returnBtn.setLayoutX(FRAME_WIDTH-90);
+		returnBtn.setLayoutY(FRAME_HEIGHT-100);
 		returnBtn.setOnAction(e -> viewBracket(primaryStage));
 		championship.getChildren().add(returnBtn);
 		
@@ -474,7 +477,7 @@ public class Main extends Application {
 			VBox scoringOps = new VBox();
 			scoringOps.setAlignment(Pos.TOP_CENTER);
 			scoringOps.setId("removeVBox");
-			scoringOps.setLayoutX(frameWidth - 140);
+			scoringOps.setLayoutX(FRAME_WIDTH - 140);
 			scoringOps.setLayoutY(75);
 			scoringOps.setSpacing(10);
 			
@@ -562,8 +565,8 @@ public class Main extends Application {
 		championBtn.setStyle("-fx-font-size: "+ 18*scalar + "px");
 		championBtn.setId("champBtn");
 		championBtn.setPrefSize(200*scalar, 100*scalar);
-		championBtn.setLayoutX((frameWidth - 180) / 2 - 80*scalar);
-		championBtn.setLayoutY((frameHeight - 140)/ 2 - 200);
+		championBtn.setLayoutX((FRAME_WIDTH - 180) / 2 - 80*scalar);
+		championBtn.setLayoutY((FRAME_HEIGHT - 140)/ 2 - 200);
 		championBtn.setOnAction(e -> champScene(primaryStage));
 		root.getChildren().add(championBtn);
 	}
@@ -571,7 +574,7 @@ public class Main extends Application {
 	public void viewBracket(Stage primaryStage) {
 		Pane root = new Pane();
 		buildDefaults(root);
-		Scene scene1 = new Scene(root, frameWidth, frameHeight);	
+		Scene scene1 = new Scene(root, FRAME_WIDTH, FRAME_HEIGHT);	
 		scene1.getStylesheets().add("application/css/bracket.css");
 		
 		//Defaults (designed around a 16 team bracket)
@@ -641,7 +644,7 @@ public class Main extends Application {
 		Button optionsBtn = new Button("Additional Options");
 		optionsBtn.setOnAction(e -> optionScreen(primaryStage));
 		optionsBtn.setMinSize(120, 40);
-		optionsBtn.setLayoutX(frameWidth-140);
+		optionsBtn.setLayoutX(FRAME_WIDTH-140);
 		optionsBtn.setLayoutY(25);
 		root.getChildren().add(optionsBtn);
 		
@@ -695,11 +698,11 @@ public class Main extends Application {
 		musicButtons.setLayoutX(400);
 		musicButtons.setMinWidth(345);
 		
-		musicText.setMinWidth(frameWidth - 345);
+		musicText.setMinWidth(FRAME_WIDTH - 345);
 		
 		musicBar.setLayoutX(0);
-		musicBar.setLayoutY(frameHeight - 25);
-		musicBar.setPrefWidth(frameWidth);
+		musicBar.setLayoutY(FRAME_HEIGHT - 25);
+		musicBar.setPrefWidth(FRAME_WIDTH);
 		musicBar.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
 		musicBar.setAlignment(Pos.BOTTOM_LEFT);
 		musicBar.setMinHeight(25);
@@ -788,7 +791,7 @@ public class Main extends Application {
 		cSongDisplay.setFont(Font.font("Verdana", 20));
 		
 		//Animate the text
-		double availWidth = frameWidth-350;
+		double availWidth = FRAME_WIDTH-350;
 		double msgWidth = 700;
 		KeyValue initKeyValue = new KeyValue(cSongDisplay.translateXProperty(), availWidth);
 		KeyFrame initFrame = new KeyFrame(Duration.ZERO, initKeyValue);
@@ -801,7 +804,7 @@ public class Main extends Application {
 		timeline.setCycleCount(Timeline.INDEFINITE);
 		timeline.play();
 		
-		File musicFolder = new File(pathToRes + "snd/music");
+		File musicFolder = new File(PATH_TO_RES + "snd/music");
 		int bennieAndtheJets = 0;
 		if (musicFolder.exists()){
 			File[] musicFiles = musicFolder.listFiles();
@@ -814,7 +817,7 @@ public class Main extends Application {
 		loopMusic(bennieAndtheJets);
 		musicPlayer.setVolume(.25); //init sound to 25%
 		
-		File logosFolder = new File(pathToRes + "img/logos");
+		File logosFolder = new File(PATH_TO_RES + "img/logos");
 		
 		if (logosFolder.exists()){
 			File[] logosFiles = logosFolder.listFiles();
