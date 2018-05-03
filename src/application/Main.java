@@ -151,8 +151,11 @@ public class Main extends Application {
 		
 		hFile.getChildren().addAll(fileLab, fileField, confirmFile);	
 		
+		
 		HBox primaryBtns = new HBox();
 		primaryBtns.setSpacing(25);
+		
+		//extra buttons (go to main page, view of bracket, clear option menu) and texts
 		
 		Button homeBtn = new Button("Title Screen");								//goes back to W
 		homeBtn.setOnAction(e -> menuScreen(primaryStage));
@@ -165,7 +168,7 @@ public class Main extends Application {
 		
 		primaryBtns.getChildren().addAll(homeBtn, bracketBtn, clearBtn);
 
-		
+		//this part lists all of the horizontal boxes in a vertical manner
 		vSize.setAlignment(Pos.TOP_LEFT);
 		vSize.getChildren().addAll(hSize, hFile, primaryBtns);
 		vSize.setLayoutX(20);
@@ -182,6 +185,20 @@ public class Main extends Application {
 		neesh.setLayoutY(FRAME_HEIGHT - 60);
 		optionPane.getChildren().addAll(neesh);
 		
+		Image bee = loadImage("logos/bee.png");
+		ImageView imvB = new ImageView(bee);
+		imvB.setScaleX(1.1);
+		imvB.setScaleY(1.1);
+		HBox bBox = new HBox(imvB);
+		bBox.setLayoutX((FRAME_WIDTH - bee.getWidth()) / 2);
+		bBox.setLayoutY((FRAME_HEIGHT- bee.getHeight())/ 2 + 25);
+		optionPane.getChildren().add(bBox);
+		
+		imvB.getStyleClass().add("image");
+		
+		//I want to change the theme of the game, how do I make a new css file and change those things?
+		imvB.setOnMouseClicked(e -> viewBracket(primaryStage));	
+		
 		primaryStage.setScene(optionScene);
 		primaryStage.show();
 		
@@ -192,16 +209,18 @@ public class Main extends Application {
 	private void menuScreen(Stage primaryStage){
 		primaryStage.setTitle("Welcome to my Ȟ̸̳͚̝̖̂ͪ̈́́ȩ͙͚͇͎͓̣ͤá̞̖̬͔̟̈́̆͋̌̀͜͟v̸̙͎̇ͬͪͬͤē̛̖͙̻̩̩̻͌̚͠n͍̬͈̝̙̱̱̰̔ͩͣͣ̂ͧ̓̃"); //maybe we need to change
 		Pane menuPane = new Pane();
-		buildDefaults(menuPane);										//sound bar
+		buildDefaults(menuPane);													//sound bar
 		
 		Scene menuScene = new Scene(menuPane, FRAME_WIDTH, FRAME_HEIGHT);
 		menuScene.getStylesheets().add("application/css/mainMenu.css");
 		
 		int[] cData = new int[]{FRAME_WIDTH / 2, FRAME_HEIGHT /2, 300};
+		
+		//circle for the W logo
 		Circle whiteP = new Circle();
 		whiteP.setCenterX(cData[0]);
 		whiteP.setCenterY(cData[1]);
-		whiteP.setFill(javafx.scene.paint.Color.WHITE);
+		whiteP.setFill(javafx.scene.paint.Color.KHAKI);
 		whiteP.setRadius(cData[2]);
 		
 		// pay no attention to this code.
@@ -220,7 +239,9 @@ public class Main extends Application {
 		fadeIn.play();
 		
 		menuPane.getChildren().addAll(whiteP, secretRegion);
+		//End of secret code
 		
+		//The Wisconsin logo
 		Image wisconsin = loadImage("logos/wi.png");
 		ImageView imvW = new ImageView(wisconsin);
 		imvW.setScaleX(1.1);
