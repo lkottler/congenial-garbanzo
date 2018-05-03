@@ -1,5 +1,5 @@
 .root {
-	 -fx-background-color: turquoise /* TODO pick a nice color :) */
+	 -fx-background-color: PALEVIOLETRED /* TODO pick a nice color :) */
 }
 
 .circle {
@@ -10,11 +10,11 @@
 	-fx-text-fill: black;
 	-fx-font-weight: bold;
 	-fx-font-family: "Robosto";
-	-fx-background-color: linear-gradient(white, yellow);
+	-fx-background-color: linear-gradient(white, tan);
 }
 
 .button:hover {
-	-fx-background-color: linear-gradient(yellow, white);
+	-fx-background-color: linear-gradient(tan, white);
 }
 
 .modifiedGame {
