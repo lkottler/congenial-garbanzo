@@ -44,6 +44,11 @@ public class Game {
 	
 	//Methods
 	public void completeGame(){
+		
+		if (team1 == null || team2 == null){
+			isCompleted = true;
+			return;
+		}
 		winner = (score[0] == score[1])
 			   ? (team1.compareTo(team2) >= 0) ? team1 : team2
 			   : (score[0] > score[1])         ? team1 : team2;

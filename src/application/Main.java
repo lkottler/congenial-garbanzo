@@ -47,6 +47,7 @@ public class Main extends Application {
 	
 	static MediaPlayer musicPlayer;
 	static ArrayList<Media> music = new ArrayList<Media>();
+	static ArrayList<Image> logos = new ArrayList<Image>();
 	static Text cSongDisplay;
 	
 	final static String pathToRes = "src/res/";
@@ -138,7 +139,7 @@ public class Main extends Application {
 		
 		menuPane.getChildren().addAll(whiteP, secretRegion);
 		
-		Image wisconsin = loadImage("wi.png");
+		Image wisconsin = loadImage("logos/wi.png");
 		ImageView imvW = new ImageView(wisconsin);
 		imvW.setScaleX(1.1);
 		imvW.setScaleY(1.1);
@@ -195,6 +196,63 @@ public class Main extends Application {
 		champScene.getStylesheets().add("application/css/mainMenu.css"); //TODO create styling for this scene.
 		ArrayList<Game> games = b.getGames();
 		
+		if (games.size() == 0){ //hard code in one winner (no possible game to display)
+			
+			
+			
+		} else { //else statement may or may not be necessary.	
+			Game championshipGame = games.get(games.size() - 1);
+			if (championshipGame.getTeam1() == null) championshipGame = games.get(0);
+			int[] scores = championshipGame.getScores();
+			Team[] teams = new Team[]{championshipGame.getTeam1(), championshipGame.getTeam2()};
+			String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
+			Label[] teamLabels = new Label[]{
+					new Label(t1Name + "'s Score:"),
+					new Label(t2Name + "'s Score:")};
+			TextField[] textFields = new TextField[]{
+					new TextField(), //team1 textfield
+					new TextField()};//team2 textfield
+			HBox[] scoreBoxes = new HBox[]{
+					new HBox(), new HBox()};
+			VBox[] teamVBoxes = new VBox[]{
+					new VBox(), new VBox()};
+			Image[] teamImages = new Image[]{getRandomLogo(), getRandomLogo()};
+			ImageView[] teamImv = new ImageView[]{new ImageView(teamImages[0]), new ImageView(teamImages[1])};
+
+			for (int i = 0; i < 2/*scoreBoxes.length*/; i++){
+				
+				teamImv[i].setFitHeight(180);
+				teamImv[i].setFitWidth(220);
+
+				
+				teamVBoxes[i].setAlignment(Pos.TOP_CENTER);
+				teamVBoxes[i].setLayoutX(i*(frameWidth / 2.5) + frameWidth / 6);
+				teamVBoxes[i].setLayoutY(100);
+				
+				if (scores[i] != 0) textFields[i].setText("" + scores[i]);
+				teamLabels[i].setFont(Font.font("Verdana", 16));
+				textFields[i].setPrefSize(50, 60);
+				textFields[i].setFont(Font.font("Verdana", 16));
+				scoreBoxes[i].setAlignment(Pos.CENTER_LEFT);
+				scoreBoxes[i].setPadding(new Insets(15, 12, 15, 12));
+				scoreBoxes[i].setMaxSize(240, 60);
+				scoreBoxes[i].setBackground(new Background(new BackgroundFill(Color.YELLOW, CornerRadii.EMPTY, Insets.EMPTY)));
+				scoreBoxes[i].setSpacing(10);
+				scoreBoxes[i].getChildren().addAll(teamLabels[i],textFields[i]);
+				
+				teamVBoxes[i].getChildren().addAll(teamImv[i], scoreBoxes[i]);
+				championship.getChildren().add(teamVBoxes[i]);
+			}
+			
+			
+			Button completeBtn = new Button("Lock in Scores");
+			completeBtn.setPrefSize(120, 60);
+			completeBtn.setLayoutX(frameWidth/2 - 80);
+			completeBtn.setLayoutY(240);
+			//completeBtn.setOnAction(e -> );
+			championship.getChildren().add(completeBtn);
+		}
+		
 		// Default button to go back (feel free to change)
 		Button returnBtn = new Button("Back");
 		returnBtn.setLayoutX(frameWidth-90);
@@ -202,19 +260,6 @@ public class Main extends Application {
 		returnBtn.setOnAction(e -> viewBracket(primaryStage));
 		championship.getChildren().add(returnBtn);
 		
-		if (games.size() == 0){ //hard code in one winner (no possible game to display)
-			
-			
-			
-		} else { //else statement may or may not be necessary.
-			
-			Button completeBtn = new Button("Lock in Scores");
-			completeBtn.setLayoutX(frameWidth-90);
-			completeBtn.setLayoutY(frameHeight-100);
-			completeBtn.setOnAction(e -> viewBracket(primaryStage));
-			
-		
-		}
 		primaryStage.setScene(champScene);
 		primaryStage.show();
 	}
@@ -225,6 +270,7 @@ public class Main extends Application {
 	 *  Cheers, Logan
 	 *  also cool if you find another way to be more suitable.
 	 */
+	/*
 	private void buildChampBtn(Button btn, Game champGame, Pane root, int paneWidth, Team team1, Team team2) {
 		int[] scores = champGame.getScores();
 		btn.setText(team1.getTeamName() + ": " + scores[0] + "\n" + team2.getTeamName() + ": " + scores[1]);
@@ -248,7 +294,7 @@ public class Main extends Application {
 			};
 		});
 	}
-	
+	*/
 	/*
 	 * Gets next row in of the games
 	 * It gets where the next game will move on from
@@ -270,12 +316,12 @@ public class Main extends Application {
 	 * when a child game is finished and updated parent that new game is ready
 	 * 
 	 */
-	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth, Stage primaryStage){
+	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth, Stage primaryStage, double scalar){
 		Team t1 = game.getTeam1(), t2 = game.getTeam2();
 		int[] scores = game.getScores();
 		
 		if (t1 != null && t2 != null){
-			buildBtn(btn, game, root, paneWidth, primaryStage); //add functionality
+			buildBtn(btn, game, root, paneWidth, primaryStage, scalar); //add functionality
 		} 
 		else btn.setText((t1 == null && t2 == null)  //simply change text
 						? ""
@@ -288,7 +334,8 @@ public class Main extends Application {
 	 * and it adds funtionality of a button
 	 * prompts you to enter score when it it's ready
 	 */
-	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth, Stage primaryStage){
+	
+	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth, Stage primaryStage, double scalar){
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
 		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
 		int[] scores = workingGame.getScores();
@@ -354,24 +401,18 @@ public class Main extends Application {
 				
 				boolean championReady = (
 										games.get(games.size()-2).isCompleted() &&
-										games.get(games.size()-3).isCompleted());
+										games.get(games.size()-3).isCompleted() &&
+										root.lookup("#champBtn") == null
+						);
 				
 				if (championReady) {
-					Button championBtn = new Button();
-					championBtn.setText("Championship");
-					championBtn.setStyle("-fx-font-size: 18px");
-					championBtn.setPrefSize(200, 100);
-					championBtn.setLayoutX((frameWidth - 180) / 2 - 55);
-					championBtn.setLayoutY((frameHeight - 140)/ 2 - 200);
-					championBtn.setOnAction(z -> champScene(primaryStage));
-
-					root.getChildren().add(championBtn);
+					buildChampBtn(primaryStage, root, scalar);
 				}
 				
 				while (thisGame < games.size() - 1){ //recursively fix parents
 					g = games.get(thisGame);
 					Button thisGameBtn = (Button) root.lookup("#btn-" + thisGame);
-					updateGameBtn(thisGameBtn, g, root, paneWidth, primaryStage);
+					updateGameBtn(thisGameBtn, g, root, paneWidth, primaryStage, scalar);
 					thisGame = getParentIndex(b.getSize() / 2, thisGame);
 				} 
 				
@@ -386,6 +427,18 @@ public class Main extends Application {
 	/*
 	 * Bracket Scene with the buttons and additional option button
 	 */
+	
+	private void buildChampBtn(Stage primaryStage, Pane root, double scalar){
+		Button championBtn = new Button();
+		championBtn.setText("Championship");
+		championBtn.setStyle("-fx-font-size: "+ 18*scalar + "px");
+		championBtn.setId("champBtn");
+		championBtn.setPrefSize(200*scalar, 100*scalar);
+		championBtn.setLayoutX((frameWidth - 180) / 2 - 80*scalar);
+		championBtn.setLayoutY((frameHeight - 140)/ 2 - 200);
+		championBtn.setOnAction(e -> champScene(primaryStage));
+		root.getChildren().add(championBtn);
+	}
 	
 	public void viewBracket(Stage primaryStage) {
 		Pane root = new Pane();
@@ -422,14 +475,7 @@ public class Main extends Application {
 				  xSpace = (int) (maxX/(2.0*iterations)) - btnWidth;
 		
 		if (b.getSize() < 3 || (games.get(games.size() - 3).isCompleted() && games.get(games.size() - 2).isCompleted())){
-			Button championBtn = new Button();
-			championBtn.setText("Championship");
-			championBtn.setStyle("-fx-font-size: 18px");
-			championBtn.setPrefSize(200, 100);
-			championBtn.setLayoutX((frameWidth - 180) / 2 - 55);
-			championBtn.setLayoutY((frameHeight - 140)/ 2 - 200);
-			championBtn.setOnAction(e -> champScene(primaryStage));
-			root.getChildren().add(championBtn);
+			buildChampBtn(primaryStage, root, scalar);
 		}
 		
 		for (int i = 0; i < iterations; i++){
@@ -444,9 +490,9 @@ public class Main extends Application {
 				btn.setId("btn-" + gameCount);
 				Game workingGame = games.get(gameCount);
 				if (workingGame.getTeam1() == null || workingGame.getTeam2() == null){ //NO FUNCTION BUTTON
-					updateGameBtn(btn, workingGame, root, maxX, primaryStage);
+					updateGameBtn(btn, workingGame, root, maxX, primaryStage, scalar);
 				} else{
-					buildBtn(btn, workingGame, root, maxX, primaryStage);
+					buildBtn(btn, workingGame, root, maxX, primaryStage, scalar);
 				}
 				//TODO fix X spacing
 				x = (j < subNumGames/2) ? 0 + xDif : maxX - xDif - btnWidth;
@@ -505,6 +551,9 @@ public class Main extends Application {
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+			System.out.println("Music failed to load.");
 		}
 		if (musicPlayer != null) {
 			musicPlayer.stop();
@@ -575,6 +624,23 @@ public class Main extends Application {
 		
 	}
 	
+	private Image getRandomLogo(){
+		int random = 0;
+		for (int i = 0; i < 100; i++){
+			random = (int) (System.currentTimeMillis() % logos.size());
+			System.out.println(random);
+		}
+		return logos.get(random);
+	}
+	
+	private Image getLogo(String name){
+		for (Image i : logos){
+			if (i.impl_getUrl().contains(name))
+				return i;
+		}
+		return null;
+	}
+	
 	public static void initVars(){
 		
 		cSongDisplay = new Text("Init");
@@ -596,10 +662,8 @@ public class Main extends Application {
 		
 		File musicFolder = new File(pathToRes + "snd/music");
 		int bennieAndtheJets = 0;
-
 		if (musicFolder.exists()){
 			File[] musicFiles = musicFolder.listFiles();
-		
 			for (File f : musicFiles){
 				if (f.toString().contains("Elton John"))
 					bennieAndtheJets = music.size();
@@ -609,12 +673,30 @@ public class Main extends Application {
 		loopMusic(bennieAndtheJets);
 		musicPlayer.setVolume(.25); //init sound to 25%
 		
-		int tempTeams = 8;
+		File logosFolder = new File(pathToRes + "img/logos");
+		
+		if (logosFolder.exists()){
+			File[] logosFiles = logosFolder.listFiles();
+			for (File f : logosFiles){
+				Image thisLogo = null;
+				String path = f.getPath();
+					   path = path.substring(path.lastIndexOf("/") + 1).substring(path.lastIndexOf("\\") + 1);
+				try {
+					thisLogo = new Image(f.toURI().toURL().toString());
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+				if (thisLogo != null){
+					logos.add(thisLogo);
+				}
+			}
+		}
+				
+		int tempTeams = 16;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
 		}
-		
 		ArrayList<Team> teamList = new ArrayList<Team>();
 		for (int i = 0; i < teamNames.length; i++){
 			teamList.add(new Team(i+1, teamNames[i]));
@@ -623,10 +705,11 @@ public class Main extends Application {
 		b = new Bracket(teamList);
 		b.initGames();
 		
+		for (Game g: b.getGames()){ g.completeGame();}
+		
 	}
 	
 	public static void main(String[] args) {
-		
 		initVars();
 		launch(args);
 	}
