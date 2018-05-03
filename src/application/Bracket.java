@@ -21,12 +21,13 @@ public class Bracket {
 	public void initGames(){
 		games = new ArrayList<Game>();
 		int numOfTeams = teams.size();
+		if (numOfTeams < 2) return;
 		if ((numOfTeams & (numOfTeams - 1)) == 0){ //Checks if the number of teams is a power of 2
 			for (int i = 0; i < numOfTeams/2; i++){
 				games.add(new Game(teams.get(i), teams.get(numOfTeams-i-1)));
 			}
 			int temp = numOfTeams / 4;
-			while (temp != 1){
+			while (temp > 1){
 				for (int i = 0; i < temp; i++)
 					games.add(new Game());
 				temp /= 2;

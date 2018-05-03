@@ -34,6 +34,8 @@ public class Game {
 	public void setTeam2(Team team2)     {this.team2    = team2;}
 	public void setTeam1Score(int score) {this.score[0] = score;}
 	public void setTeam2Score(int score) {this.score[1] = score;}
+	public void setScores(int score[]) {this.score[0] = score[0]; this.score[1] = score[1];}
+	
 	
 	//Getters
 	public int[] getScores()     {return score;}

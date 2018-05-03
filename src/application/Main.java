@@ -193,22 +193,35 @@ public class Main extends Application {
 		Pane championship = new Pane();
 		buildDefaults(championship); //music bar
 		Scene champScene = new Scene(championship);
-		champScene.getStylesheets().add("application/css/mainMenu.css"); //TODO create styling for this scene.
+		champScene.getStylesheets().add("application/css/championship.css"); //TODO create styling for this scene.
 		ArrayList<Game> games = b.getGames();
 		
 		if (games.size() == 0){ //hard code in one winner (no possible game to display)
+			String winner = (b.getSize() > 0) ? "" + b.getTeams().get(0).getTeamName() : "Nobody :'(";
+			Label noFun = new Label("You're no fun...\nThe winner is: " + winner);
+			noFun.setFont(Font.font("Verdana", 32));
+			noFun.setLayoutY(frameHeight / 2 - 100);
+			noFun.setLayoutX(frameWidth  / 2 - 80);
+			noFun.setAlignment(Pos.CENTER_LEFT);
 			
-			
+			championship.getChildren().add(noFun);
 			
 		} else { //else statement may or may not be necessary.	
-			Game championshipGame = games.get(games.size() - 1);
-			if (championshipGame.getTeam1() == null) championshipGame = games.get(0);
+			
+			final Game championshipGame = (games.get(games.size() - 1).getTeam1() != null) //make sure the game is defined
+					? games.get(games.size() - 1)
+					: games.get(0);
 			int[] scores = championshipGame.getScores();
 			Team[] teams = new Team[]{championshipGame.getTeam1(), championshipGame.getTeam2()};
 			String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
 			Label[] teamLabels = new Label[]{
 					new Label(t1Name + "'s Score:"),
-					new Label(t2Name + "'s Score:")};
+					new Label(t2Name + "'s Score:")},
+					
+					finalScores = new Label[]{
+					new Label(""),
+					new Label("")};
+					
 			TextField[] textFields = new TextField[]{
 					new TextField(), //team1 textfield
 					new TextField()};//team2 textfield
@@ -216,14 +229,18 @@ public class Main extends Application {
 					new HBox(), new HBox()};
 			VBox[] teamVBoxes = new VBox[]{
 					new VBox(), new VBox()};
-			Image[] teamImages = new Image[]{getRandomLogo(), getRandomLogo()};
+			Image[] teamImages = new Image[]{null, null};
+			while (teamImages[0] == teamImages[1]){
+				teamImages[0] = getRandomLogo();
+				teamImages[1] = getRandomLogo();
+				System.out.println("finished");
+			}
 			ImageView[] teamImv = new ImageView[]{new ImageView(teamImages[0]), new ImageView(teamImages[1])};
 
 			for (int i = 0; i < 2/*scoreBoxes.length*/; i++){
 				
 				teamImv[i].setFitHeight(180);
 				teamImv[i].setFitWidth(220);
-
 				
 				teamVBoxes[i].setAlignment(Pos.TOP_CENTER);
 				teamVBoxes[i].setLayoutX(i*(frameWidth / 2.5) + frameWidth / 6);
@@ -231,6 +248,7 @@ public class Main extends Application {
 				
 				if (scores[i] != 0) textFields[i].setText("" + scores[i]);
 				teamLabels[i].setFont(Font.font("Verdana", 16));
+				finalScores[i].setFont(Font.font("Verdana", 48));
 				textFields[i].setPrefSize(50, 60);
 				textFields[i].setFont(Font.font("Verdana", 16));
 				scoreBoxes[i].setAlignment(Pos.CENTER_LEFT);
@@ -240,17 +258,45 @@ public class Main extends Application {
 				scoreBoxes[i].setSpacing(10);
 				scoreBoxes[i].getChildren().addAll(teamLabels[i],textFields[i]);
 				
-				teamVBoxes[i].getChildren().addAll(teamImv[i], scoreBoxes[i]);
+				teamVBoxes[i].getChildren().addAll(teamImv[i], scoreBoxes[i], finalScores[i]);
 				championship.getChildren().add(teamVBoxes[i]);
 			}
 			
+			Image vsImg = loadImage("vs.png");
+			ImageView vsImv = new ImageView(vsImg);
+			vsImv.setFitHeight(100);
+			vsImv.setFitWidth(120);
+			vsImv.setLayoutX(frameWidth/2 - 80);
+			vsImv.setLayoutY(100);
 			
+			Image crown = loadImage("crown.png");
+			ImageView crownImv = new ImageView(crown);
+			//crownImv.setFitHeight(10);
+			//crownImv.setFitWidth(10);
+			crownImv.setLayoutX(100);
+			crownImv.setLayoutY(100);
+
 			Button completeBtn = new Button("Lock in Scores");
 			completeBtn.setPrefSize(120, 60);
 			completeBtn.setLayoutX(frameWidth/2 - 80);
 			completeBtn.setLayoutY(240);
-			//completeBtn.setOnAction(e -> );
-			championship.getChildren().add(completeBtn);
+			completeBtn.setOnAction(e -> {
+				
+				if (textFields[0].getText().matches("-?\\d+")){ //-? --> negative sign (one or none), \\d+ --> one or more digits
+					scores[0] = Integer.parseInt(textFields[0].getText());
+					championshipGame.setTeam1Score(scores[0]);
+					finalScores[0].setText("" + scores[0]);
+				} if (textFields[1].getText().matches("-?\\d+")){
+					scores[1] = Integer.parseInt(textFields[1].getText());
+					championshipGame.setTeam2Score(scores[1]);
+					finalScores[1].setText("" + scores[1]);
+				}
+				b.completeGame(championshipGame);
+				
+				championship.getChildren().add(crownImv);
+			});
+			
+			championship.getChildren().addAll(completeBtn, vsImv);
 		}
 		
 		// Default button to go back (feel free to change)
@@ -446,7 +492,7 @@ public class Main extends Application {
 		Scene scene1 = new Scene(root, frameWidth, frameHeight);	
 		scene1.getStylesheets().add("application/css/bracket.css");
 		
-		//Defaults (based around a 16 team bracket)
+		//Defaults (designed around a 16 team bracket)
 		
 		ArrayList<Game> games = b.getGames();
 		
@@ -460,10 +506,11 @@ public class Main extends Application {
 		xAvailSpace = 0.9 * (st.MAX_X.val() - st.X_PADDING.val()) / (iterations*2.0) / st.BTN_WIDTH.val(),
 		yAvailSpace = (st.MAX_Y.val() - st.Y_PADDING.val()) / (numGames/2.0) / st.BTN_HEIGHT.val();
 		
-		final double scalar = (xAvailSpace < yAvailSpace) // see which is restricting
-					? xAvailSpace
-					: yAvailSpace;
-				
+		final double scalar = (numGames < 2) ? 2
+					:(xAvailSpace < yAvailSpace) // see which is restricting
+						? xAvailSpace
+						: yAvailSpace;
+
 		final int maxX     = st.MAX_X.val(),
 				  maxY     = st.MAX_Y.val(),
 				  xPad     = st.X_PADDING.scale(scalar),
@@ -624,11 +671,21 @@ public class Main extends Application {
 		
 	}
 	
+	static final long
+	SEED = 0,
+	MUL_A = 1103515245,
+	MOD_M = 2147483647,
+	INC_C = 12345;
+	static long curr_rand;
+	private static int getRandomNumber(int min, int max){
+		curr_rand = (MUL_A * curr_rand + INC_C) % MOD_M;
+		return (int) (curr_rand % (max - min)) + min;
+	}
+	
 	private Image getRandomLogo(){
 		int random = 0;
 		for (int i = 0; i < 100; i++){
-			random = (int) (System.currentTimeMillis() % logos.size());
-			System.out.println(random);
+			random = getRandomNumber(0, logos.size());
 		}
 		return logos.get(random);
 	}
@@ -647,13 +704,13 @@ public class Main extends Application {
 		cSongDisplay.setFont(Font.font("Verdana", 20));
 		
 		//Animate the text
-		double availWidth = frameWidth-230;
+		double availWidth = frameWidth-350;
 		double msgWidth = 700;
 		KeyValue initKeyValue = new KeyValue(cSongDisplay.translateXProperty(), availWidth);
 		KeyFrame initFrame = new KeyFrame(Duration.ZERO, initKeyValue);
 		
 		KeyValue endKeyValue = new KeyValue(cSongDisplay.translateXProperty(), -1.0 * msgWidth);
-		KeyFrame endFrame = new KeyFrame(Duration.seconds(8), endKeyValue);
+		KeyFrame endFrame = new KeyFrame(Duration.seconds(10), endKeyValue);
 		
 		Timeline timeline = new Timeline(initFrame, endFrame);
 		
@@ -692,7 +749,7 @@ public class Main extends Application {
 			}
 		}
 				
-		int tempTeams = 16;
+		int tempTeams = 2;
 		String[] teamNames = new String[tempTeams];
 		for (int i = 0; i < tempTeams; i++){
 			teamNames[i] = "Team " + (i+1);
