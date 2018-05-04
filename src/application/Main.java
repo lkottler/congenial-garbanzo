@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -32,6 +31,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -164,16 +164,18 @@ public class Main extends Application {
 		
 		//extra buttons (go to main page, view of bracket, clear option menu) and texts
 		
-		Button homeBtn = new Button("Title Screen");								//goes back to W
+		Button homeBtn = new Button("Title Screen");									//goes back to W
 		homeBtn.setOnAction(e -> menuScreen(primaryStage));
 		
-		Button bracketBtn = new Button("Return to Bracket");								//goes back to bracket
+		Button bracketBtn = new Button("Return to Bracket");							//goes back to bracket
 		bracketBtn.setOnAction(e -> viewBracket(primaryStage));
 		
-//		Button clearBtn = new Button("C");											//resets option page
-//		clearBtn.setOnAction(e -> changeSizeOfBracket(31-Integer.numberOfLeadingZeros(b.getSize()/2)));
+		Button clearBtn = new Button("Clear Scores");												//resets option page
+		clearBtn.setOnAction(e -> changeSizeOfBracket(32-Integer.numberOfLeadingZeros(b.getSize()/2)));
 
-		primaryBtns.getChildren().addAll(homeBtn, bracketBtn);
+		primaryBtns.getChildren().addAll(homeBtn, bracketBtn, clearBtn);
+		
+		
 
 		//this part lists all of the horizontal boxes in a vertical manner
 		vSize.setAlignment(Pos.TOP_LEFT);
@@ -205,7 +207,8 @@ public class Main extends Application {
 		imvB.getStyleClass().add("image");
 		
 		//I want to change the theme of the game, how do I make a new css file and change those things?
-		imvB.setOnMouseClicked(e -> viewBracket(primaryStage));	
+		imvB.setOnMouseClicked(e -> optionScene.getStylesheets().add("application/css/chicken.css"));
+			
 		
 		primaryStage.setScene(optionScene);
 		primaryStage.show();
@@ -232,6 +235,7 @@ public class Main extends Application {
 		whiteP.setCenterY(cData[1]);
 		whiteP.setFill(javafx.scene.paint.Color.WHITE);
 		whiteP.setRadius(cData[2]);
+		whiteP.setOnMouseClicked(e -> viewBracket(primaryStage));
 		
 //		Image secret = loadImage("menu.png");
 //		ImageView imvS = new ImageView(secret);
@@ -353,7 +357,9 @@ public class Main extends Application {
 					new VBox(), new VBox()};
 			Image[] teamImages = new Image[]{null, null};
 			while (teamImages[0] == teamImages[1]){
-				teamImages[0] = getRandomLogo();
+				Image randomLogo = getRandomLogo();
+				if (randomLogo == null) break;
+				teamImages[0] = randomLogo;
 				teamImages[1] = getRandomLogo();
 			}
 			ImageView[] teamImv = new ImageView[]{new ImageView(teamImages[0]), new ImageView(teamImages[1])};
@@ -427,7 +433,7 @@ public class Main extends Application {
 			completeBtn.setOnAction(e -> {
 				
 				String thirdPlace = "Nobody!";
-				if (games.size() > 1){
+				if (games.size() > 2){
 					Game[] prevGames = new Game[]{games.get(games.size() - 3), games.get(games.size() - 2)};
 					if (prevGames[0] == null) prevGames[0] = prevGames[1];
 					
@@ -788,8 +794,10 @@ public class Main extends Application {
 	private static void loopMusic(int mIndex){
 		double currVol = 100;
 		String currentSong = "Hmm, something's not quite right...";
-		
-		Media songMedia = music.get(mIndex);
+		Media songMedia = null;
+		if (music.size() > 0) {
+			songMedia = music.get(mIndex);
+		}
 		try {
 			currentSong = java.net.URLDecoder.decode(songMedia.getSource(), "UTF-8"); //decodes
 			currentSong = currentSong.substring(currentSong.lastIndexOf("/") + 1).substring(currentSong.lastIndexOf("\\") + 1); //removes file path
@@ -800,6 +808,8 @@ public class Main extends Application {
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
 			System.out.println("Music failed to load.");
+		} catch (NullPointerException e) {
+			System.out.println("tried to load music and failed.");
 		}
 		if (musicPlayer != null) {
 			musicPlayer.stop();
@@ -808,69 +818,78 @@ public class Main extends Application {
 		}
 		
 		cSongDisplay.setText("Now Playing: " + currentSong);
-		musicPlayer = new MediaPlayer(music.get(mIndex));
-		musicPlayer.setVolume(currVol);
-		musicPlayer.setOnEndOfMedia(new Runnable() {public void run(){loopMusic(true);}} );
-		musicPlayer.play();
+		
+		try {
+			musicPlayer = new MediaPlayer(music.get(mIndex));
+		} catch (MediaException e) {
+			System.out.println("failed to create MediaPlayer");
+		}
+		
+		if (musicPlayer != null){
+			musicPlayer.setVolume(currVol);
+			musicPlayer.setOnEndOfMedia(new Runnable() {public void run(){loopMusic(true);}} );
+			musicPlayer.play();
+		}
 	}
 	/*
 	 * This function is to have an overlay on all scenes.
 	 * Right now its only functionality is to create the music bar at the bottom of the screen.
 	 */
 	private static void buildDefaults(Pane panel){ //This can add toolbars and such
-		HBox musicBar = new HBox(3);
-		HBox musicText = new HBox();
-		HBox musicButtons = new HBox(3);
-		
-		musicButtons.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-		musicButtons.setAlignment(Pos.BOTTOM_RIGHT);
-		musicButtons.setLayoutX(400);
-		musicButtons.setMinWidth(345);
-		
-		musicText.setMinWidth(FRAME_WIDTH - 345);
-		
-		musicBar.setLayoutX(0);
-		musicBar.setLayoutY(FRAME_HEIGHT - 25);
-		musicBar.setPrefWidth(FRAME_WIDTH);
-		musicBar.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-		musicBar.setAlignment(Pos.BOTTOM_LEFT);
-		musicBar.setMinHeight(25);
-		
-		Button pSong = new Button("Previous");
-		pSong.getStyleClass().add("soundButton");
-		pSong.setOnAction(e -> {
-			loopMusic(false);
-		});
-		Button nSong = new Button("Next");
-		nSong.getStyleClass().add("soundButton");
-		nSong.setOnAction(e -> {
-			loopMusic(true);
-		});
-		
-		Text volText = new Text();
-		volText.setFont(Font.font("Verdana", 20));
-		volText.setFill(Color.WHITE);
-		Slider volumeSlider = new Slider();
-		volumeSlider.setOrientation(Orientation.HORIZONTAL);
-		volumeSlider.setPrefWidth(150);
-		volumeSlider.setShowTickMarks(true);
-		volumeSlider.setMajorTickUnit(10);
-		volumeSlider.setMinorTickCount(0);
-		volumeSlider.setShowTickLabels(false);
-		volumeSlider.valueProperty().addListener(
-				(observable, oldvalue, newvalue) ->
-				{
-					int i = newvalue.intValue();
-					volText.setText(Integer.toString(i) + "%");
-					musicPlayer.setVolume(i / 100.0);
-				});
-		volumeSlider.setValue(musicPlayer.getVolume() * 100);
-		
-		musicText.getChildren().add(cSongDisplay);
-		musicButtons.getChildren().addAll(volText, volumeSlider, pSong, nSong);
-		musicBar.getChildren().addAll(musicText, musicButtons);
-		panel.getChildren().add(musicBar);
-		
+		if (musicPlayer != null){
+			HBox musicBar = new HBox(3);
+			HBox musicText = new HBox();
+			HBox musicButtons = new HBox(3);
+			
+			musicButtons.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+			musicButtons.setAlignment(Pos.BOTTOM_RIGHT);
+			musicButtons.setLayoutX(400);
+			musicButtons.setMinWidth(345);
+			
+			musicText.setMinWidth(FRAME_WIDTH - 345);
+			
+			musicBar.setLayoutX(0);
+			musicBar.setLayoutY(FRAME_HEIGHT - 25);
+			musicBar.setPrefWidth(FRAME_WIDTH);
+			musicBar.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+			musicBar.setAlignment(Pos.BOTTOM_LEFT);
+			musicBar.setMinHeight(25);
+			
+			Button pSong = new Button("Previous");
+			pSong.getStyleClass().add("soundButton");
+			pSong.setOnAction(e -> {
+				loopMusic(false);
+			});
+			Button nSong = new Button("Next");
+			nSong.getStyleClass().add("soundButton");
+			nSong.setOnAction(e -> {
+				loopMusic(true);
+			});
+			
+			Text volText = new Text();
+			volText.setFont(Font.font("Verdana", 20));
+			volText.setFill(Color.WHITE);
+			Slider volumeSlider = new Slider();
+			volumeSlider.setOrientation(Orientation.HORIZONTAL);
+			volumeSlider.setPrefWidth(150);
+			volumeSlider.setShowTickMarks(true);
+			volumeSlider.setMajorTickUnit(10);
+			volumeSlider.setMinorTickCount(0);
+			volumeSlider.setShowTickLabels(false);
+			volumeSlider.valueProperty().addListener(
+					(observable, oldvalue, newvalue) ->
+					{
+						int i = newvalue.intValue();
+						volText.setText(Integer.toString(i) + "%");
+						musicPlayer.setVolume(i / 100.0);
+					});
+			volumeSlider.setValue(musicPlayer.getVolume() * 100);
+			
+			musicText.getChildren().add(cSongDisplay);
+			musicButtons.getChildren().addAll(volText, volumeSlider, pSong, nSong);
+			musicBar.getChildren().addAll(musicText, musicButtons);
+			panel.getChildren().add(musicBar);
+		}
 	}
 	
 	/*
@@ -883,12 +902,14 @@ public class Main extends Application {
 	static long curr_rand;
 	private static int getRandomNumber(int min, int max){
 		curr_rand = (MUL_A * curr_rand + INC_C) % MOD_M;
+		if (max == min) return 0;
 		return (int) (curr_rand % (max - min)) + min;
 	}
 	/*
 	 * This function returns an image of a random Logo in the Logos folder.
 	 */
 	private Image getRandomLogo(){
+		if (logos.size() == 0) return null;
 		curr_rand = System.currentTimeMillis(); //more random every time
 		int random = 0;
 		for (int i = 0; i < 100; i++){
@@ -957,7 +978,8 @@ public class Main extends Application {
 			}
 		}
 		loopMusic(bennieAndtheJets);
-		musicPlayer.setVolume(.25); //init sound to 25%
+		if (musicPlayer != null)
+			musicPlayer.setVolume(.25); //init sound to 25%
 		
 		File logosFolder = new File(PATH_TO_RES + "img/logos");
 		
