@@ -91,7 +91,7 @@ public class Main extends Application {
 		System.out.println(totalTeams);
 		ArrayList<Team> newTeams = new ArrayList<Team>();
 		for (int i = 0; i < totalTeams; i++){
-			newTeams.add(new Team(i, "Team: " + i));
+			newTeams.add(new Team(i, "Team: " + (i + 1)));
 		}
 		b = new Bracket(newTeams);
 	}
@@ -415,7 +415,7 @@ public class Main extends Application {
 				
 				String thirdPlace = "Nobody!";
 				if (games.size() > 1){
-					Game[] prevGames = new Game[]{games.get(games.size() - 2), games.get(games.size() - 1)};
+					Game[] prevGames = new Game[]{games.get(games.size() - 3), games.get(games.size() - 2)};
 					if (prevGames[0] == null) prevGames[0] = prevGames[1];
 					
 					Team[] losers = new Team[2];
