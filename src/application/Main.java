@@ -769,68 +769,71 @@ public class Main extends Application {
 		
 		cSongDisplay.setText("Now Playing: " + currentSong);
 		musicPlayer = new MediaPlayer(music.get(mIndex));
-		musicPlayer.setVolume(currVol);
-		musicPlayer.setOnEndOfMedia(new Runnable() {public void run(){loopMusic(true);}} );
-		musicPlayer.play();
+		if (musicPlayer != null){
+			musicPlayer.setVolume(currVol);
+			musicPlayer.setOnEndOfMedia(new Runnable() {public void run(){loopMusic(true);}} );
+			musicPlayer.play();
+		}
 	}
 	/*
 	 * This function is to have an overlay on all scenes.
 	 * Right now its only functionality is to create the music bar at the bottom of the screen.
 	 */
 	private static void buildDefaults(Pane panel){ //This can add toolbars and such
-		HBox musicBar = new HBox(3);
-		HBox musicText = new HBox();
-		HBox musicButtons = new HBox(3);
-		
-		musicButtons.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
-		musicButtons.setAlignment(Pos.BOTTOM_RIGHT);
-		musicButtons.setLayoutX(400);
-		musicButtons.setMinWidth(345);
-		
-		musicText.setMinWidth(FRAME_WIDTH - 345);
-		
-		musicBar.setLayoutX(0);
-		musicBar.setLayoutY(FRAME_HEIGHT - 25);
-		musicBar.setPrefWidth(FRAME_WIDTH);
-		musicBar.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-		musicBar.setAlignment(Pos.BOTTOM_LEFT);
-		musicBar.setMinHeight(25);
-		
-		Button pSong = new Button("Previous");
-		pSong.getStyleClass().add("soundButton");
-		pSong.setOnAction(e -> {
-			loopMusic(false);
-		});
-		Button nSong = new Button("Next");
-		nSong.getStyleClass().add("soundButton");
-		nSong.setOnAction(e -> {
-			loopMusic(true);
-		});
-		
-		Text volText = new Text();
-		volText.setFont(Font.font("Verdana", 20));
-		volText.setFill(Color.WHITE);
-		Slider volumeSlider = new Slider();
-		volumeSlider.setOrientation(Orientation.HORIZONTAL);
-		volumeSlider.setPrefWidth(150);
-		volumeSlider.setShowTickMarks(true);
-		volumeSlider.setMajorTickUnit(10);
-		volumeSlider.setMinorTickCount(0);
-		volumeSlider.setShowTickLabels(false);
-		volumeSlider.valueProperty().addListener(
-				(observable, oldvalue, newvalue) ->
-				{
-					int i = newvalue.intValue();
-					volText.setText(Integer.toString(i) + "%");
-					musicPlayer.setVolume(i / 100.0);
-				});
-		volumeSlider.setValue(musicPlayer.getVolume() * 100);
-		
-		musicText.getChildren().add(cSongDisplay);
-		musicButtons.getChildren().addAll(volText, volumeSlider, pSong, nSong);
-		musicBar.getChildren().addAll(musicText, musicButtons);
-		panel.getChildren().add(musicBar);
-		
+		if (musicPlayer != null){
+			HBox musicBar = new HBox(3);
+			HBox musicText = new HBox();
+			HBox musicButtons = new HBox(3);
+			
+			musicButtons.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+			musicButtons.setAlignment(Pos.BOTTOM_RIGHT);
+			musicButtons.setLayoutX(400);
+			musicButtons.setMinWidth(345);
+			
+			musicText.setMinWidth(FRAME_WIDTH - 345);
+			
+			musicBar.setLayoutX(0);
+			musicBar.setLayoutY(FRAME_HEIGHT - 25);
+			musicBar.setPrefWidth(FRAME_WIDTH);
+			musicBar.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+			musicBar.setAlignment(Pos.BOTTOM_LEFT);
+			musicBar.setMinHeight(25);
+			
+			Button pSong = new Button("Previous");
+			pSong.getStyleClass().add("soundButton");
+			pSong.setOnAction(e -> {
+				loopMusic(false);
+			});
+			Button nSong = new Button("Next");
+			nSong.getStyleClass().add("soundButton");
+			nSong.setOnAction(e -> {
+				loopMusic(true);
+			});
+			
+			Text volText = new Text();
+			volText.setFont(Font.font("Verdana", 20));
+			volText.setFill(Color.WHITE);
+			Slider volumeSlider = new Slider();
+			volumeSlider.setOrientation(Orientation.HORIZONTAL);
+			volumeSlider.setPrefWidth(150);
+			volumeSlider.setShowTickMarks(true);
+			volumeSlider.setMajorTickUnit(10);
+			volumeSlider.setMinorTickCount(0);
+			volumeSlider.setShowTickLabels(false);
+			volumeSlider.valueProperty().addListener(
+					(observable, oldvalue, newvalue) ->
+					{
+						int i = newvalue.intValue();
+						volText.setText(Integer.toString(i) + "%");
+						musicPlayer.setVolume(i / 100.0);
+					});
+			volumeSlider.setValue(musicPlayer.getVolume() * 100);
+			
+			musicText.getChildren().add(cSongDisplay);
+			musicButtons.getChildren().addAll(volText, volumeSlider, pSong, nSong);
+			musicBar.getChildren().addAll(musicText, musicButtons);
+			panel.getChildren().add(musicBar);
+		}
 	}
 	
 	/*
@@ -917,7 +920,8 @@ public class Main extends Application {
 			}
 		}
 		loopMusic(bennieAndtheJets);
-		musicPlayer.setVolume(.25); //init sound to 25%
+		if (musicPlayer != null)
+			musicPlayer.setVolume(.25); //init sound to 25%
 		
 		File logosFolder = new File(PATH_TO_RES + "img/logos");
 		
