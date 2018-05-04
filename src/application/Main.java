@@ -164,13 +164,18 @@ public class Main extends Application {
 		
 		//extra buttons (go to main page, view of bracket, clear option menu) and texts
 		
-		Button homeBtn = new Button("Title Screen");								//goes back to W
+		Button homeBtn = new Button("Title Screen");									//goes back to W
 		homeBtn.setOnAction(e -> menuScreen(primaryStage));
 		
-		Button bracketBtn = new Button("Return to Bracket");								//goes back to bracket
+		Button bracketBtn = new Button("Return to Bracket");							//goes back to bracket
 		bracketBtn.setOnAction(e -> viewBracket(primaryStage));
+		
+		Button clearBtn = new Button("Clear Scores");												//resets option page
+		clearBtn.setOnAction(e -> changeSizeOfBracket(32-Integer.numberOfLeadingZeros(b.getSize()/2)));
 
-		primaryBtns.getChildren().addAll(homeBtn, bracketBtn);
+		primaryBtns.getChildren().addAll(homeBtn, bracketBtn, clearBtn);
+		
+		
 
 		//this part lists all of the horizontal boxes in a vertical manner
 		vSize.setAlignment(Pos.TOP_LEFT);
@@ -193,17 +198,7 @@ public class Main extends Application {
 		ImageView imvB = new ImageView(bee);
 		imvB.setScaleX(1.1);
 		imvB.setScaleY(1.1);
-<<<<<<< HEAD
-
-=======
 		// I took out the bee image
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> d5abe351d5f7967bc50ce395adc3a2b29229f8e5
-=======
->>>>>>> d5abe351d5f7967bc50ce395adc3a2b29229f8e5
-=======
->>>>>>> d5abe351d5f7967bc50ce395adc3a2b29229f8e5
 		HBox bBox = new HBox(imvB);
 		bBox.setLayoutX((FRAME_WIDTH - bee.getWidth()) / 2);
 		bBox.setLayoutY((FRAME_HEIGHT- bee.getHeight())/ 2 + 25);
