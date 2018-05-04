@@ -170,8 +170,8 @@ public class Main extends Application {
 		Button bracketBtn = new Button("View Bracket");								//goes back to bracket
 		bracketBtn.setOnAction(e -> viewBracket(primaryStage));
 		
-		Button clearBtn = new Button("Clear Bracket");										//resets option page
-		clearBtn.setOnAction(e -> changeSizeOfBracket(Integer.numberOfLeadingZeros(b.getSize()/2)));
+		Button clearBtn = new Button("C");											//resets option page
+		clearBtn.setOnAction(e -> changeSizeOfBracket(31-Integer.numberOfLeadingZeros(b.getSize()/2)));
 		
 		primaryBtns.getChildren().addAll(homeBtn, bracketBtn, clearBtn);
 
