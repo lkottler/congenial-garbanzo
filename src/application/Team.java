@@ -1,3 +1,15 @@
+//////////////////// ALL ASSIGNMENTS INCLUDE THIS SECTION /////////////////////
+//
+// Title:         		Team.java
+// Additional Files:	options.css, bracket.css, championship.css, mainMenu.css, chicken.css
+// Due Date:			May 3rd, 2018
+// Course:          	CS 400, Spring, 2018
+//
+// Author:          	Logan Kottler, Neeshan Khanikar, Kevin Kemp, Abby Kisicki, Aanjanaye Kajaria
+// Email:           	lkottler@wisc.edu, khanikar@wisc.edu, kkemp3@wisc.edu, kisicki@wisc.edu, kajaria@wisc.edu
+// Lecturer's Name: 	Deb Deppeler
+//
+/////////////////////////////// 80 COLUMNS WIDE ///////////////////////////////
 package application;
 
 public class Team {
