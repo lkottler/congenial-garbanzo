@@ -167,11 +167,8 @@ public class Main extends Application {
 		Button homeBtn = new Button("Title Screen");								//goes back to W
 		homeBtn.setOnAction(e -> menuScreen(primaryStage));
 		
-		Button bracketBtn = new Button("View Bracket");								//goes back to bracket
+		Button bracketBtn = new Button("Return to Bracket");								//goes back to bracket
 		bracketBtn.setOnAction(e -> viewBracket(primaryStage));
-		
-//		Button clearBtn = new Button("C");											//resets option page
-//		clearBtn.setOnAction(e -> changeSizeOfBracket(31-Integer.numberOfLeadingZeros(b.getSize()/2)));
 
 		primaryBtns.getChildren().addAll(homeBtn, bracketBtn);
 
@@ -196,10 +193,17 @@ public class Main extends Application {
 		ImageView imvB = new ImageView(bee);
 		imvB.setScaleX(1.1);
 		imvB.setScaleY(1.1);
+<<<<<<< HEAD
+
+=======
 		// I took out the bee image
-		Button back_button = new Button("Return to Bracket");
-		primaryBtns.getChildren().add(back_button);
-		back_button.setOnMouseClicked(e -> viewBracket(primaryStage));
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> d5abe351d5f7967bc50ce395adc3a2b29229f8e5
+=======
+>>>>>>> d5abe351d5f7967bc50ce395adc3a2b29229f8e5
+=======
+>>>>>>> d5abe351d5f7967bc50ce395adc3a2b29229f8e5
 		HBox bBox = new HBox(imvB);
 		bBox.setLayoutX((FRAME_WIDTH - bee.getWidth()) / 2);
 		bBox.setLayoutY((FRAME_HEIGHT- bee.getHeight())/ 2 + 25);
@@ -255,6 +259,16 @@ public class Main extends Application {
 		
 		menuPane.getChildren().addAll(whiteP);
 		
+		// HBox to give directions to user at menu screen
+		Label text = new Label("Click the logo to begin your journey!");
+		text.setFont(Font.font("Verdana", 24));
+		text.setTextFill(Color.WHITE);
+		HBox directions = new HBox(text);
+		directions.setAlignment(Pos.CENTER_LEFT);
+		directions.setLayoutX(((FRAME_HEIGHT - directions.getWidth()) / 2) -120);
+		directions.setLayoutY(0);
+		menuPane.getChildren().add(directions);
+		
 		//The Wisconsin logo
 		Image wisconsin = loadImage("logos/wi.png");
 		ImageView imvW = new ImageView(wisconsin);
@@ -266,8 +280,8 @@ public class Main extends Application {
 		menuPane.getChildren().add(wiscoHBox);
 		
 		imvW.getStyleClass().add("image");
-		imvW.setOnMouseClicked(e -> viewBracket(primaryStage));		
-		
+		imvW.setOnMouseClicked(e -> viewBracket(primaryStage));
+			
 		primaryStage.setScene(menuScene);
 		primaryStage.sizeToScene();
 		primaryStage.show();	
