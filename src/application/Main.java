@@ -198,6 +198,9 @@ public class Main extends Application {
 =======
 		// I took out the bee image
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> d5abe351d5f7967bc50ce395adc3a2b29229f8e5
+=======
 >>>>>>> d5abe351d5f7967bc50ce395adc3a2b29229f8e5
 =======
 >>>>>>> d5abe351d5f7967bc50ce395adc3a2b29229f8e5
