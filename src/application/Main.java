@@ -50,7 +50,7 @@ public class Main extends Application {
 	FRAME_HEIGHT = 800,
 	FRAME_WIDTH = 1000;
 	
-	static MediaPlayer musicPlayer;
+//	static MediaPlayer musicPlayer;
 	static ArrayList<Media> music = new ArrayList<Media>();
 	static ArrayList<Image> logos = new ArrayList<Image>();
 	static Text cSongDisplay;
@@ -112,7 +112,7 @@ public class Main extends Application {
 		primaryStage.setTitle("Option Menu");
 		Pane optionPane = new Pane();
 		
-		buildDefaults(optionPane);
+//		buildDefaults(optionPane);
 		
 		Scene optionScene = new Scene (optionPane, FRAME_WIDTH, FRAME_HEIGHT);
 		optionScene.getStylesheets().add("application/css/options.css");
@@ -224,7 +224,7 @@ public class Main extends Application {
 	private void menuScreen(Stage primaryStage){
 		primaryStage.setTitle("Welcome to my Ȟ̸̳͚̝̖̂ͪ̈́́ȩ͙͚͇͎͓̣ͤá̞̖̬͔̟̈́̆͋̌̀͜͟v̸̙͎̇ͬͪͬͤē̛̖͙̻̩̩̻͌̚͠n͍̬͈̝̙̱̱̰̔ͩͣͣ̂ͧ̓̃"); //maybe we need to change
 		Pane menuPane = new Pane();
-		buildDefaults(menuPane);													//sound bar
+//		buildDefaults(menuPane);													//sound bar
 		
 		Scene menuScene = new Scene(menuPane, FRAME_WIDTH, FRAME_HEIGHT);
 		menuScene.getStylesheets().add("application/css/mainMenu.css");
@@ -313,7 +313,7 @@ public class Main extends Application {
 	 */
 	private void champScene(Stage primaryStage){
 		Pane championship = new Pane();
-		buildDefaults(championship); //music bar
+//		buildDefaults(championship); //music bar
 		Scene champScene = new Scene(championship);
 		champScene.getStylesheets().add("application/css/championship.css");
 		ArrayList<Game> games = b.getGames();
@@ -667,7 +667,7 @@ public class Main extends Application {
 	 */
 	public void viewBracket(Stage primaryStage) {
 		Pane root = new Pane();
-		buildDefaults(root);
+//		buildDefaults(root);
 		Scene scene1 = new Scene(root, FRAME_WIDTH, FRAME_HEIGHT);	
 		scene1.getStylesheets().add("application/css/bracket.css");
 		
@@ -758,7 +758,6 @@ public class Main extends Application {
 				teams[i].setTextFill(Color.WHITE);
 			}
 			finalResults.getChildren().addAll(teams[0], teams[1], teams[2]);
-			finalResults.setMinSize(200, 100);
 			finalResults.setLayoutX(FRAME_WIDTH / 2 - 225);
 			finalResults.setLayoutY(FRAME_HEIGHT - 125);
 			finalResults.setStyle("application/css/bracket.css");;
@@ -782,7 +781,7 @@ public class Main extends Application {
 	 * This function calls itself with the next song if 
 	 * @param next is true: next song, false: previous song.
 	 */
-	private static void loopMusic(boolean next) { 
+	/*private static void loopMusic(boolean next) { 
 		int currInd = music.indexOf(musicPlayer.getMedia());
 		loopMusic((next) 
 				? (currInd + 1 >= music.size()) ? 0 : currInd + 1
@@ -792,7 +791,8 @@ public class Main extends Application {
 	 * This plays music from the music instantiated give the
 	 * @param mIndex, index of the music in the list stored.
 	 */
-	private static void loopMusic(int mIndex){
+	/*private static void loopMusic(int mIndex){
+
 		double currVol = 100;
 		String currentSong = "Hmm, something's not quite right...";
 		Media songMedia = null;
@@ -821,6 +821,7 @@ public class Main extends Application {
 		cSongDisplay.setText("Now Playing: " + currentSong);
 		
 		try {
+			if (music.size() > 0) 
 			musicPlayer = new MediaPlayer(music.get(mIndex));
 		} catch (MediaException e) {
 			System.out.println("failed to create MediaPlayer");
@@ -831,12 +832,13 @@ public class Main extends Application {
 			musicPlayer.setOnEndOfMedia(new Runnable() {public void run(){loopMusic(true);}} );
 			musicPlayer.play();
 		}
+		
 	}
 	/*
 	 * This function is to have an overlay on all scenes.
 	 * Right now its only functionality is to create the music bar at the bottom of the screen.
 	 */
-	private static void buildDefaults(Pane panel){ //This can add toolbars and such
+/*	private static void buildDefaults(Pane panel){ //This can add toolbars and such
 		if (musicPlayer != null){
 			HBox musicBar = new HBox(3);
 			HBox musicText = new HBox();
@@ -978,10 +980,10 @@ public class Main extends Application {
 				music.add(new Media(f.toURI().toString()));
 			}
 		}
-		loopMusic(bennieAndtheJets);
-		if (musicPlayer != null)
-			musicPlayer.setVolume(.25); //init sound to 25%
-		
+//		loopMusic(bennieAndtheJets);
+//		if (musicPlayer != null)
+//			musicPlayer.setVolume(.25); //init sound to 25%
+//		
 		File logosFolder = new File(PATH_TO_RES + "img/logos");
 		
 		if (logosFolder.exists()){
