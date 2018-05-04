@@ -81,6 +81,11 @@ public class Main extends Application {
 		return img;
 	}
 	
+	/*
+	 * This function is called when in the Options menu
+	 * It allows the user to reset the bracket with new teams
+	 * @param rounds is the power of 2 number of teams
+	 */
 	private void changeSizeOfBracket(int rounds){
 		int totalTeams = (1 << rounds);
 		System.out.println(totalTeams);
@@ -92,11 +97,13 @@ public class Main extends Application {
 	}
 	
 	/* 
-	 * OptionsScreen that redirects to bracket
-	 * load file
-	 * reset bracket function: reset all of the arrays (Games and Teams)
-	 * go back to bracket 
-	 * add any additional fun things: choose theme, change font, change genre
+	 * This function is called when the user clicks "Additional options button in viewBracket()
+	 * It builds a new scene composed of options of things to change within the bracket itself.
+	 * 
+	 * You may 
+	 * change the total number of teams
+	 * Reload the teams from reading a file
+	 * Return to the main menu
 	 * 
 	 */
 	private void optionScreen(Stage primaryStage){
@@ -208,7 +215,9 @@ public class Main extends Application {
 		
 	}
 	/*
-	 * Main menu scene loaded
+	 * This function is called after variables have been initialized in initVars()
+	 * This will be the first screen the user sees, and must remain fairly simply.
+	 * The user may click on the "w" image to call function viewBracket() moving onto another scene.
 	 */
 	private void menuScreen(Stage primaryStage){
 		primaryStage.setTitle("Welcome to my Ȟ̸̳͚̝̖̂ͪ̈́́ȩ͙͚͇͎͓̣ͤá̞̖̬͔̟̈́̆͋̌̀͜͟v̸̙͎̇ͬͪͬͤē̛̖͙̻̩̩̻͌̚͠n͍̬͈̝̙̱̱̰̔ͩͣͣ̂ͧ̓̃"); //maybe we need to change
@@ -283,7 +292,11 @@ public class Main extends Application {
 	}
 
 	/*
-	 * this function will display the scores of the final game, allow locking in of scores, and display the top 3
+	 * This function is called when the player has reached the final game of the tournament.
+	 * I found it fitting to have a more epic battle for the last game
+	 * When scores are locked in, the top 3 teams are shown.
+	 * 
+	 * TODO: fix all-way-tie-breakers for 3rd place (4 teams same score)
 	 */
 	private void champScene(Stage primaryStage){
 		Pane championship = new Pane();
@@ -466,6 +479,11 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 	
+	/*
+	 * This function makes a sudo-tree from a linear list.
+	 * It returns what *would* be the parent of a node, given it is in an ArrayList
+	 * This function is necessary for recursive changing of scores in the case a root score is changed.
+	 */
 	private static int getParentIndex(int total, int curr){
 		int offset = 0;
 		int temp = 0;
@@ -479,9 +497,8 @@ public class Main extends Application {
 	}
 	
 	/*
-	 * Changes text of button
-	 * when a child game is finished and updated parent that new game is ready
-	 * 
+	 * This function servers to update the text of a button that is not yet ready for functionality
+	 * This is mostly only called when one of the two children of the game has been completed.
 	 */
 	private void updateGameBtn(Button btn, Game game, Pane root, int paneWidth, Stage primaryStage, double scalar, Scene scene){
 		Team t1 = game.getTeam1(), t2 = game.getTeam2();
@@ -497,11 +514,10 @@ public class Main extends Application {
 								: t1.getTeamName() + ": " + scores[0] + "\n____________");
 	}
 	/*
-	 * build a bracket button
-	 * and it adds funtionality of a button
-	 * prompts you to enter score when it it's ready
+	 * This function adds functionality to the button passed in
+	 * essentially populating a button to represent a game fully.
+	 * score boxes and function buttons appear when clicked.
 	 */
-	
 	private void buildBtn(Button btn, Game workingGame, Pane root, int paneWidth, Stage primaryStage, double scalar, Scene scene){
 		Team[] teams = new Team[]{workingGame.getTeam1(), workingGame.getTeam2()};
 		String t1Name = teams[0].getTeamName(), t2Name = teams[1].getTeamName();
@@ -614,9 +630,10 @@ public class Main extends Application {
 		});
 	}
 	/*
-	 * Bracket Scene with the buttons and additional option button
+	 * This function builds the "Championship" button that moves the scene to the
+	 * final destination; the Championship!!
+	 * This is only called when all other games have been completed.
 	 */
-	
 	private void buildChampBtn(Stage primaryStage, Pane root, double scalar){
 		Button championBtn = new Button();
 		championBtn.setText("Championship");
@@ -628,7 +645,11 @@ public class Main extends Application {
 		championBtn.setOnAction(e -> champScene(primaryStage));
 		root.getChildren().add(championBtn);
 	}
-	
+	/*
+	 * This is the "main" area  the user will be spending their time.
+	 * Data is entered into games here.
+	 * This function builds a GUI for the bracket.
+	 */
 	public void viewBracket(Stage primaryStage) {
 		Pane root = new Pane();
 		buildDefaults(root);
@@ -710,13 +731,20 @@ public class Main extends Application {
 		primaryStage.show(); 
 	}
 	
-	
+	/*
+	 * This function calls itself with the next song if 
+	 * @param next is true: next song, false: previous song.
+	 */
 	private static void loopMusic(boolean next) { 
 		int currInd = music.indexOf(musicPlayer.getMedia());
 		loopMusic((next) 
 				? (currInd + 1 >= music.size()) ? 0 : currInd + 1
 				: (currInd - 1 < 0) ? music.size() - 1 : currInd - 1);
 	}
+	/*
+	 * This plays music from the music instantiated give the
+	 * @param mIndex, index of the music in the list stored.
+	 */
 	private static void loopMusic(int mIndex){
 		double currVol = 100;
 		String currentSong = "Hmm, something's not quite right...";
@@ -745,7 +773,10 @@ public class Main extends Application {
 		musicPlayer.setOnEndOfMedia(new Runnable() {public void run(){loopMusic(true);}} );
 		musicPlayer.play();
 	}
-
+	/*
+	 * This function is to have an overlay on all scenes.
+	 * Right now its only functionality is to create the music bar at the bottom of the screen.
+	 */
 	private static void buildDefaults(Pane panel){ //This can add toolbars and such
 		HBox musicBar = new HBox(3);
 		HBox musicText = new HBox();
@@ -802,7 +833,9 @@ public class Main extends Application {
 		
 	}
 	
-	//standard C library random constants
+	/*
+	 * This function generates a random number, using standard C random vals.
+	 */
 	static final long
 	MUL_A = 1103515245,
 	MOD_M = 2147483647,
@@ -812,7 +845,9 @@ public class Main extends Application {
 		curr_rand = (MUL_A * curr_rand + INC_C) % MOD_M;
 		return (int) (curr_rand % (max - min)) + min;
 	}
-	
+	/*
+	 * This function returns an image of a random Logo in the Logos folder.
+	 */
 	private Image getRandomLogo(){
 		curr_rand = System.currentTimeMillis(); //more random every time
 		int random = 0;
@@ -822,6 +857,11 @@ public class Main extends Application {
 		return logos.get(random);
 	}
 	
+	/*
+	 * This function will reset the bracket with teams read in from a file.
+	 * It is called at execution from the first argument given,
+	 * or from manual input from the Options menu.
+	 */
 	private static void initTeamsByFile(String filePath){
 		int counter = 1;
 		String line = null;
@@ -843,6 +883,10 @@ public class Main extends Application {
 		b = new Bracket(newTeams);		
 	}
 	
+	/*
+	 * This function loads in a lot of the resources required during this program.
+	 * It is the basis for what values are going to be.
+	 */
 	public static void initVars(String fileOfTeams){
 		
 		cSongDisplay = new Text("Init");
@@ -912,7 +956,9 @@ public class Main extends Application {
 		// TESTING CODE: THIS WILL COMPLETE EVERY GAME
 		//for (Game g: b.getGames()){ g.completeGame();}
 	}
-	
+	/*
+	 * main, pretty self explanatory.
+	 */
 	public static void main(String[] args) {
 		initVars((args.length > 0) ? args[0] : "");
 		launch();
