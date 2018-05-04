@@ -57,6 +57,8 @@ public class Main extends Application {
 	
 	final static String PATH_TO_RES = "src/res/";
 	
+	private static String thirdPlace = "Nobody";
+	
 	@Override
 	public void start(Stage primaryStage) {
 		primaryStage.setResizable(false);
@@ -264,12 +266,6 @@ public class Main extends Application {
 		directions.setAlignment(Pos.CENTER_LEFT);
 		directions.setLayoutX(((FRAME_HEIGHT - directions.getWidth()) / 2) -120);
 		directions.setLayoutY(0);
-		FadeTransition appear = new FadeTransition(Duration.seconds(0), directions);
-		appear.setFromValue(0);
-		appear.setToValue(1);
-		appear.setDelay(Duration.seconds(5));
-		appear.play();
-
 		menuPane.getChildren().add(directions);
 		
 		//The Wisconsin logo
@@ -432,7 +428,7 @@ public class Main extends Application {
 			completeBtn.setLayoutY(240);
 			completeBtn.setOnAction(e -> {
 				
-				String thirdPlace = "Nobody!";
+				this.thirdPlace = "Nobody!";
 				if (games.size() > 2){
 					Game[] prevGames = new Game[]{games.get(games.size() - 3), games.get(games.size() - 2)};
 					if (prevGames[0] == null) prevGames[0] = prevGames[1];
@@ -449,7 +445,7 @@ public class Main extends Application {
 							oldScores[i] = prevGames[i].getScores()[0];
 						}
 					} if (!(losers[0] == null || losers[1] == null)){
-					thirdPlace = (oldScores[0] > oldScores[1])
+					this.thirdPlace = (oldScores[0] > oldScores[1])
 							? losers[0].getTeamName()
 							: losers[1].getTeamName();
 					}
@@ -744,23 +740,28 @@ public class Main extends Application {
 			String winner = null;
 			Game endChamp = games.get(gameCount);
 			if (endChamp.getWinner() == endChamp.getTeam1()) {
-				loser = "" + endChamp.getTeam2();
-				winner = "" + endChamp.getTeam1();
+				loser = "" + endChamp.getTeam2().getTeamName();
+				winner = "" + endChamp.getTeam1().getTeamName();
 			} else {
-				loser = "" + endChamp.getTeam1();
-				winner = "" + endChamp.getTeam2();
+				loser = "" + endChamp.getTeam1().getTeamName();
+				winner = "" + endChamp.getTeam2().getTeamName();
 			}
-			HBox finalResults = new HBox();
+			VBox finalResults = new VBox();
 			int [] champScores = games.get(gameCount).getScores();
 			int bigScore = (champScores[0] < champScores[1]) ? champScores[1] : champScores[0];
 			int smallScore = (bigScore > champScores[1]) ? champScores[1] : champScores[0];
-			String filler = " with a score of";
-			Label[] teams = new Label[] {new Label("Champion: " + winner + filler + bigScore) 
-					, new Label("Second Place: " + loser + filler + smallScore)};
-			finalResults.getChildren().addAll(teams[0], teams[1]);
+			String filler = " with a score of ";
+			Label[] teams = new Label[] {new Label("Champion: " + winner + filler + bigScore)
+					, new Label("Second Place: " + loser + filler + smallScore), new Label("Third place: " + this.thirdPlace )};
+			for (int i = 0; i < teams.length; i++) {
+				teams[i].setFont(Font.font("Verdana", 18));
+				teams[i].setTextFill(Color.WHITE);
+			}
+			finalResults.getChildren().addAll(teams[0], teams[1], teams[2]);
 			finalResults.setMinSize(200, 100);
-			finalResults.setLayoutX(FRAME_WIDTH / 2);
-			finalResults.setLayoutY(FRAME_HEIGHT - 10);
+			finalResults.setLayoutX(FRAME_WIDTH / 2 - 225);
+			finalResults.setLayoutY(FRAME_HEIGHT - 125);
+			finalResults.setStyle("application/css/bracket.css");;
 			root.getChildren().add(finalResults);
 		}
 		

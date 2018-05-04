@@ -43,3 +43,9 @@
 .soundButton:hover {
     -fx-background-color: linear-gradient(#bc3315, #d0451b);
 }
+.setBorder {
+	-fx-border-color: red; 
+	-fx-border-insets: 5;
+	-fx-border-width: 3;
+	-fx-border-style: dashed;
+}
