@@ -207,7 +207,8 @@ public class Main extends Application {
 		imvB.getStyleClass().add("image");
 		
 		//I want to change the theme of the game, how do I make a new css file and change those things?
-		imvB.setOnMouseClicked(e -> viewBracket(primaryStage));	
+		imvB.setOnMouseClicked(e -> optionScene.getStylesheets().add("application/css/chicken.css"));
+			
 		
 		primaryStage.setScene(optionScene);
 		primaryStage.show();
