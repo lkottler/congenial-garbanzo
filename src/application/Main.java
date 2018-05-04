@@ -260,6 +260,12 @@ public class Main extends Application {
 		directions.setAlignment(Pos.CENTER_LEFT);
 		directions.setLayoutX(((FRAME_HEIGHT - directions.getWidth()) / 2) -120);
 		directions.setLayoutY(0);
+		FadeTransition appear = new FadeTransition(Duration.seconds(0), directions);
+		appear.setFromValue(0);
+		appear.setToValue(1);
+		appear.setDelay(Duration.seconds(5));
+		appear.play();
+
 		menuPane.getChildren().add(directions);
 		
 		//The Wisconsin logo
@@ -726,6 +732,33 @@ public class Main extends Application {
 				}
 			}
 		}
+		// Add view Championship results 
+		if (games.get(gameCount).isCompleted()) {
+			String loser = null;
+			String winner = null;
+			Game endChamp = games.get(gameCount);
+			if (endChamp.getWinner() == endChamp.getTeam1()) {
+				loser = "" + endChamp.getTeam2();
+				winner = "" + endChamp.getTeam1();
+			} else {
+				loser = "" + endChamp.getTeam1();
+				winner = "" + endChamp.getTeam2();
+			}
+			HBox finalResults = new HBox();
+			int [] champScores = games.get(gameCount).getScores();
+			int bigScore = (champScores[0] < champScores[1]) ? champScores[1] : champScores[0];
+			int smallScore = (bigScore > champScores[1]) ? champScores[1] : champScores[0];
+			String filler = " with a score of";
+			Label[] teams = new Label[] {new Label("Champion: " + winner + filler + bigScore) 
+					, new Label("Second Place: " + loser + filler + smallScore)};
+			finalResults.getChildren().addAll(teams[0], teams[1]);
+			finalResults.setMinSize(200, 100);
+			finalResults.setLayoutX(FRAME_WIDTH / 2);
+			finalResults.setLayoutY(FRAME_HEIGHT - 10);
+			root.getChildren().add(finalResults);
+		}
+		
+
 		// SIDE BAR RIGHT SIDE // TODO: ADD MORE OPTIONS
 		Button optionsBtn = new Button("Additional Options");
 		optionsBtn.setOnAction(e -> optionScreen(primaryStage));
