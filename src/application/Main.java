@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -32,6 +31,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -234,6 +234,7 @@ public class Main extends Application {
 		whiteP.setCenterY(cData[1]);
 		whiteP.setFill(javafx.scene.paint.Color.WHITE);
 		whiteP.setRadius(cData[2]);
+		whiteP.setOnMouseClicked(e -> viewBracket(primaryStage));
 		
 //		Image secret = loadImage("menu.png");
 //		ImageView imvS = new ImageView(secret);
@@ -349,7 +350,9 @@ public class Main extends Application {
 					new VBox(), new VBox()};
 			Image[] teamImages = new Image[]{null, null};
 			while (teamImages[0] == teamImages[1]){
-				teamImages[0] = getRandomLogo();
+				Image randomLogo = getRandomLogo();
+				if (randomLogo == null) break;
+				teamImages[0] = randomLogo;
 				teamImages[1] = getRandomLogo();
 			}
 			ImageView[] teamImv = new ImageView[]{new ImageView(teamImages[0]), new ImageView(teamImages[1])};
@@ -423,7 +426,7 @@ public class Main extends Application {
 			completeBtn.setOnAction(e -> {
 				
 				String thirdPlace = "Nobody!";
-				if (games.size() > 1){
+				if (games.size() > 2){
 					Game[] prevGames = new Game[]{games.get(games.size() - 3), games.get(games.size() - 2)};
 					if (prevGames[0] == null) prevGames[0] = prevGames[1];
 					
@@ -757,8 +760,10 @@ public class Main extends Application {
 	private static void loopMusic(int mIndex){
 		double currVol = 100;
 		String currentSong = "Hmm, something's not quite right...";
-		
-		Media songMedia = music.get(mIndex);
+		Media songMedia = null;
+		if (music.size() > 0) {
+			songMedia = music.get(mIndex);
+		}
 		try {
 			currentSong = java.net.URLDecoder.decode(songMedia.getSource(), "UTF-8"); //decodes
 			currentSong = currentSong.substring(currentSong.lastIndexOf("/") + 1).substring(currentSong.lastIndexOf("\\") + 1); //removes file path
@@ -769,6 +774,8 @@ public class Main extends Application {
 		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
 			System.out.println("Music failed to load.");
+		} catch (NullPointerException e) {
+			System.out.println("tried to load music and failed.");
 		}
 		if (musicPlayer != null) {
 			musicPlayer.stop();
@@ -777,7 +784,13 @@ public class Main extends Application {
 		}
 		
 		cSongDisplay.setText("Now Playing: " + currentSong);
-		musicPlayer = new MediaPlayer(music.get(mIndex));
+		
+		try {
+			musicPlayer = new MediaPlayer(music.get(mIndex));
+		} catch (MediaException e) {
+			System.out.println("failed to create MediaPlayer");
+		}
+		
 		if (musicPlayer != null){
 			musicPlayer.setVolume(currVol);
 			musicPlayer.setOnEndOfMedia(new Runnable() {public void run(){loopMusic(true);}} );
@@ -855,12 +868,14 @@ public class Main extends Application {
 	static long curr_rand;
 	private static int getRandomNumber(int min, int max){
 		curr_rand = (MUL_A * curr_rand + INC_C) % MOD_M;
+		if (max == min) return 0;
 		return (int) (curr_rand % (max - min)) + min;
 	}
 	/*
 	 * This function returns an image of a random Logo in the Logos folder.
 	 */
 	private Image getRandomLogo(){
+		if (logos.size() == 0) return null;
 		curr_rand = System.currentTimeMillis(); //more random every time
 		int random = 0;
 		for (int i = 0; i < 100; i++){
