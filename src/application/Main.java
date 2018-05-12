@@ -258,16 +258,6 @@ public class Main extends Application {
 		
 		menuPane.getChildren().addAll(whiteP);
 		
-		// HBox to give directions to user at menu screen
-		Label text = new Label("Click the logo to begin your journey!");
-		text.setFont(Font.font("Verdana", 24));
-		text.setTextFill(Color.WHITE);
-		HBox directions = new HBox(text);
-		directions.setAlignment(Pos.CENTER_LEFT);
-		directions.setLayoutX(((FRAME_HEIGHT - directions.getWidth()) / 2) -120);
-		directions.setLayoutY(0);
-		menuPane.getChildren().add(directions);
-		
 		//The Wisconsin logo
 		Image wisconsin = loadImage("logos/wi.png");
 		ImageView imvW = new ImageView(wisconsin);
